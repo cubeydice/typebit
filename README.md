@@ -17,7 +17,7 @@ In addition, this project will include:
 * A production README
 
 # Wireframes
-[typebit wireframe](docs/wireframe.png)
+![typebit wireframe](docs/wireframe.png)
 
 * Nav links include links to this project's Github repo and my LinkedIn
 * Menu links include optionsn for the player to restart the game
