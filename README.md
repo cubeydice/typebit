@@ -1,5 +1,5 @@
-# typebit
-typebit interactive typing game in a charming pixelated style. Accurate typing on a keyboard allows your little animal to proceed through a 2D environment, blast your way through enemies, and open any stubborn doors.
+# Background
+typebit is interactive typing game in a charming pixelated style. Accurate typing on a keyboard allows your little animal to proceed through a 2D environment, blast your way through enemies, and open any stubborn doors.
 
 Typing speed is displayed along with player health. Enemies have words above their heads. Typing those words gets rid of the enemies in your way! Typing inaccuracies or failing to get rid of an enemy before it reaches you will decrease your health. You you may encounter road blocks that require a minimum typing speed to get through them.
 
