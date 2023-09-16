@@ -36,3 +36,16 @@ This project will be implemented with the following technologies:
 * **Tuesday:** Ensure player health is decremented correctly and complete end game screen with game instance data for the player, such as average typing speed, typing accuracy, number of enemies destroyed, number of blockades destroyed, and total words typed.
 * **Wednesday:** Finish implementing user controls, and focus on styling. If time, create simple visual for end game data.
 * **Thursday Morning:** Deploy final version to GitHub.
+
+# Resources
+### Images
+[Pixel Slime](https://rvros.itch.io/pixel-art-animated-slime)
+
+[Tiny Hero Sprites](https://craftpix.net/freebies/free-pixel-art-tiny-hero-sprites/)
+
+
+[Nature Background](https://craftpix.net/freebies/free-nature-backgrounds-pixel-art/)
+
+### Music
+[Sounds by Dagurasu](https://dagurasusketch.itch.io/retrosounds)
+[Background Music by Rin](https://pluslerin.itch.io/retro-rpg-bgms)
