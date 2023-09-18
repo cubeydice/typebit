@@ -49,3 +49,6 @@ This project will be implemented with the following technologies:
 ### Music
 [Sounds by Dagurasu](https://dagurasusketch.itch.io/retrosounds)
 [Background Music by Rin](https://pluslerin.itch.io/retro-rpg-bgms)
+
+### Icons
+[Freepik](https://www.flaticon.com/authors/freepik)
