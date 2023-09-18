@@ -2,10 +2,12 @@ import Background from "./scripts/background";
 import TypeBit from "./scripts/game";
 
 const canvas = document.getElementById('canvas');
-const dimensions = { width: canvas.width, height: canvas.height };
-const context = canvas.getContext("2d");
+// const dimensions = { width: canvas.width, height: canvas.height };
+// const context = canvas.getContext("2d");
 const mobileError = document.getElementById('mobile-error');
-const audio = document.getElementById("music");
+const retry = document.getElementById("retry")
+const mute = document.getElementById("bg-mute")
+const audio = document.getElementById("bg-music")
 
 //check if user is using mobile device
 window.mobileCheck = function() {
@@ -15,14 +17,21 @@ window.mobileCheck = function() {
 };
 
 //only show game if not on mobile device
-if (!window.mobileCheck()) {
+if (window.mobileCheck()) {
+  mobileError.innerText = "sorry, typebit is not compatible with mobile devices 🥺"
+} else {
+  // Play Game
   const game = new TypeBit(canvas);
   game.play();
 
-  // Music
-  const mute = document.getElementById("bg-mute")
-  const audio = document.getElementById("bg-music")
+  //Restart Game
+  const restart = (e) => {
+    e.preventDefault();
+    game.restart();
+  }
+  retry.addEventListener("click", restart)
 
+  // Music
   const muteAudio = (e) => {
     e.preventDefault();
 
@@ -36,7 +45,5 @@ if (!window.mobileCheck()) {
   }
 
   mute.addEventListener("click", muteAudio)
-} else {
-  mobileError.innerText = "sorry, typebit is not compatible with mobile devices 🥺"
 }
 

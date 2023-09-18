@@ -12,7 +12,7 @@ export default class TypeBit {
 
   play() {
     this.running = true
-    this.bg = new Background();
+    this.bg = new Background(this.ctx, this.dimensions);
     this.animate()
   }
 
