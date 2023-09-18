@@ -1,7 +1,9 @@
 const CONSTANTS = {
   GAME_SPEED: 5,
   X: 0,
-  X2: 400,
+  X2: 20,
+  X3: 40,
+  X4: 60
 }
 export default class Background {
   constructor() {
@@ -13,14 +15,14 @@ export default class Background {
   }
 
   animate(ctx, dimensions) {
-    // ctx.clearRect(0, 0, ctx.width, ctx.height);
+    console.log(this)
     this.createImage(this.bg[0], ctx, CONSTANTS.X, dimensions)
     this.createImage(this.bg[1], ctx, CONSTANTS.X, dimensions)
     this.createImage(this.bg[2], ctx, CONSTANTS.X, dimensions)
     this.createImage(this.bg[3], ctx, CONSTANTS.X, dimensions)
-    console.log(this)
 
-    // requestAnimationFrame(this.animate);
+
+    // requestAnimationFrame(this.animate.bind(this, ctx, dimensions));
   }
 
 

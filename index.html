@@ -19,16 +19,22 @@
     <nav>
       <ul class="menu">
         <li><img src="assets/icons/undo.png"></li>
-        <li><img src="assets/icons/mute.png"></li>
-        <li><img src="assets/icons/speaker.png"></li>
+        <li id="bg-audio">
+            <img id="bg-mute" src="assets/icons/speaker.png">
+
+            <audio id="bg-music" loop="loop" autoplay="autoplay">
+              <source src="assets/music/bg/musiccolors.mp3" type="audio/mpeg">
+            </audio>
+        </li>
+
       </ul>
       <ul class="nav">
         <li><a href="https://github.com/cubeydice/typebit"><img src="assets/nav/github-mark.png"></a></li>
         <li><a href="https://www.linkedin.com/in/queen-belle-d-118b7859/"><img src="assets/nav/LI-IN-Bug.png"></a></li>
       </ul>
     </nav>
+    <div id="mobile-error"></div>
     <canvas id="canvas" width="1152" height="576"></canvas>
-    <div id="root"></div>
   </body>
 
 </html>

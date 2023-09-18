@@ -1,9 +1,12 @@
 @import './styles/css_reset.scss', './styles/nav.scss', './styles/background.scss';
 
-* {
+body {
     font-family: 'VT323', monospace;
+    align-content: center;
 }
 
-body {
-    align-content: center;
+#mobile-error {
+    width: 300px;
+    font-size: 60px;
+    text-align: center;
 }

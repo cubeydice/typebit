@@ -12,6 +12,7 @@ export default class TypeBit {
 
   play() {
     this.running = true
+    this.bg = new Background();
     this.animate()
   }
 
@@ -20,7 +21,7 @@ export default class TypeBit {
     this.running = false;
     this.score = 0;
     this.player = new Player(this.dimensions);
-    this.bg = new Background(this.ctx, this.dimensions);
+    this.bg = new Background();
   }
 
   gameOver() {
@@ -28,11 +29,11 @@ export default class TypeBit {
   }
 
   animate() {
-    this.background.animate(this.ctx)
+    this.bg.animate(this.ctx, this.dimensions)
   }
 
-  registerEvents() {
-    this.boundClickHandler = this.click.bind(this);
-    this.ctx.canvas.addEventListener("mousedown", this.boundClickHandler);
-  }
+  // registerEvents() {
+  //   this.boundClickHandler = this.click.bind(this);
+  //   this.ctx.canvas.addEventListener("mousedown", this.boundClickHandler);
+  // }
 }

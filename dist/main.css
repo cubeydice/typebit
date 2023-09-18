@@ -74,7 +74,7 @@ img {
   height: 50px;
 }
 
-.menu:hover {
+.menu li:hover {
   filter: brightness(50%);
 }
 
@@ -83,10 +83,13 @@ canvas {
   margin: auto;
 }
 
-* {
+body {
   font-family: "VT323", monospace;
+  align-content: center;
 }
 
-body {
-  align-content: center;
+#mobile-error {
+  width: 300px;
+  font-size: 60px;
+  text-align: center;
 }
