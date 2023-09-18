@@ -16,10 +16,11 @@ export default class TypeBit {
   }
 
   restart() {
+    //need to add restart functionality to restart button
     this.running = false;
     this.score = 0;
     this.player = new Player(this.dimensions);
-    this.bg = new Background(this.ctx, this.canvas)
+    this.bg = new Background(this.ctx, this.dimensions);
   }
 
   gameOver() {
@@ -28,5 +29,10 @@ export default class TypeBit {
 
   animate() {
     this.background.animate(this.ctx)
+  }
+
+  registerEvents() {
+    this.boundClickHandler = this.click.bind(this);
+    this.ctx.canvas.addEventListener("mousedown", this.boundClickHandler);
   }
 }

@@ -2,7 +2,10 @@ const CONSTANTS = {
   PLAYER_SPEED: 0,
   PLAYER_HEALTH: 100,
   PLAYER_WIDTH: 0,
-  PLAYER_HEIGHT: 0
+  PLAYER_HEIGHT: 0,
+  SPRITE_WALK: "assets/game/player/walk.png",
+  SPRITE_RUN: "assets/game/player/run.png",
+  SPRITE_RUN: "assets/game/player/attack.png"
 }
 
 export default class Player {
@@ -12,10 +15,12 @@ export default class Player {
     this.y = PLAYER_HEIGHT;
     this.speed = PLAYER_SPEED;
     this.health = PLAYER_HEALTH;
+    const player = newImage();
   }
 
-  walk() {
+  walk(ctx) {
     //animation for slow typing speed
+    ctx.drawImage(this.player)
   }
 
   run() {
