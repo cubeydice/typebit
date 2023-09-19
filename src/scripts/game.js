@@ -12,7 +12,8 @@ export default class TypeBit {
 
   play() {
     this.running = true
-    this.bg = new Background(this.ctx, this.dimensions);
+    this.bg = new Background(this.ctx);
+    this.player = new Player(this.dimensions)
     this.animate()
   }
 
@@ -20,8 +21,8 @@ export default class TypeBit {
     //need to add restart functionality to restart button
     this.running = false;
     this.score = 0;
+    this.bg = new Background(this.ctx);
     this.player = new Player(this.dimensions);
-    this.bg = new Background();
   }
 
   gameOver() {
@@ -30,6 +31,7 @@ export default class TypeBit {
 
   animate() {
     this.bg.animate(this.ctx, this.dimensions)
+    this.player.animate(this.ctx)
   }
 
   // registerEvents() {

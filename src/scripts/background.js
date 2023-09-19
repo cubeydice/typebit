@@ -1,12 +1,12 @@
 const CONSTANTS = {
-  GAME_SPEED: 1,
+  GAME_SPEED: 2,
   GAME_FRAME: 0,
-  SPEED_MODS: [0, 0.2, 0.4, 0.6],
+  SPEED_MODS: [0, 0.5, 0.7, 0.9],
   WIDTH: 1152,
   HEIGHT: 576,
 }
 export default class Background {
-  constructor(ctx, dimensions) {
+  constructor(ctx) {
     // this.createImage = this.createImage.bind(this)
     this.ctx = ctx;
     this.bg = ['assets/game/background/nature_2/1.png',
@@ -14,6 +14,7 @@ export default class Background {
           'assets/game/background/nature_2/3.png',
           'assets/game/background/nature_2/4.png' ];
     this.layers = [];
+
     let i = 0
     this.bg.forEach(img => {
       const image = new Image();
@@ -30,18 +31,10 @@ export default class Background {
       layer.update();
       layer.draw();
     })
+
     CONSTANTS.GAME_FRAME--
+
     requestAnimationFrame(this.animate.bind(this, ctx, dimensions));
-  }
-
-
-  createImage(url, ctx, x, dimensions) {
-    const img = new Image();
-    img.onload = function() {
-      ctx.drawImage(img, x, 0, dimensions.width, dimensions.height);
-    }
-    img.src = url;
-    return img;
   }
 }
 class Layer {
@@ -59,7 +52,7 @@ class Layer {
 
   update() {
     this.speed = CONSTANTS.GAME_SPEED * this.speedMod
-    this.x = CONSTANTS.GAME_FRAME * this.speed % this.width;
+    this.x = CONSTANTS.GAME_FRAME * this.speed % (this.width);
   }
 
   draw() {
