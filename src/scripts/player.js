@@ -5,13 +5,16 @@ const CONSTANTS = {
   PLAYER_HEIGHT: 64,
   SPRITE_WALK: 'assets/game/player/walk.png',
   SPRITE_RUN: 'assets/game/player/run.png',
-  SPRITE_RUN: 'assets/game/player/attack.png',
+  SPRITE_ATTACK: 'assets/game/player/attack.png',
+  SPRITE_HURT: 'assets/game/player/hurt.png',
+  SPRITE_IDLE: 'assets/game/player/idle.png', //for future use in blockades
+  GAME_FRAME: 0,
   SPRITE_FRAME: 0,
-  STAGGER_FRAME: 5,
+  STAGGER_FRAME: 9,
   SPRITE_X: 32,
   SPRITE_Y: 32,
   SPRITE_POS_X: 100,
-  SPRITE_POS_Y: 400,
+  SPRITE_POS_Y: 410,
 }
 
 export default class Player {
@@ -21,35 +24,47 @@ export default class Player {
     this.y = CONSTANTS.PLAYER_HEIGHT;
     this.speed = CONSTANTS.PLAYER_SPEED;
     this.health = CONSTANTS.PLAYER_HEALTH;
+    this.spriteAnim = [CONSTANTS.SPRITE_WALK, CONSTANTS.SPRITE_RUN,
+      CONSTANTS.SPRITE_ATTACK, CONSTANTS.SPRITE_HURT, CONSTANTS.SPRITE_IDLE]
     this.playerImg = new Image();
     this.playerImg.src = CONSTANTS.SPRITE_WALK;
   }
 
-  walk(ctx) {
-    //animation for slow typing speed
+  walk() {
+    this.playerImg.src = this.spriteAnim[0];
+    CONSTANTS.STAGGER_FRAME = 9;
   }
 
-  run(ctx) {
+  run() {
     //animation for moderate typing speed
+    this.playerImg.src = this.spriteAnim[1];
+    CONSTANTS.STAGGER_FRAME = 5;
   }
 
-  sprint(ctx) {
+  attack() {
     //animation for fast typing speed
+    this.playerImg.src = this.spriteAnim[2];
   }
 
-  hurt(ctx) {
+  hurt() {
     //animation and decrease in health for when inaccurate typing is detected
+    this.playerImg.src = this.spriteAnim[3];
+    CONSTANTS.STAGGER_FRAME = 12;
     CONSTANTS.PLAYER_HEALTH -= 10;
   }
 
   animate(ctx) {
-    // ctx.clearRect(0, 0, this.dimensions.width, this.dimensions.height)
-    ctx.drawImage(this.playerImg, CONSTANTS.SPRITE_X * CONSTANTS.SPRITE_FRAME, 0, CONSTANTS.SPRITE_X, CONSTANTS.SPRITE_Y, CONSTANTS.SPRITE_POS_X, CONSTANTS.SPRITE_POS_Y, this.x, this.y)
+    ctx.clearRect.bind(this, 0, 0, this.dimensions.width, this.dimensions.height)
 
-    if (CONSTANTS.SPRITE_FRAME % CONSTANTS.STAGGER_FRAME == 0) {
-      if (CONSTANTS.SPRITE_FRAME < 5) CONSTANTS.SPRITE_FRAME++
-      else CONSTANTS.SPRITE_FRAME = 0;
-    }
+    let position = Math.floor(CONSTANTS.GAME_FRAME/CONSTANTS.STAGGER_FRAME) % 5;
+    CONSTANTS.SPRITE_FRAME = CONSTANTS.SPRITE_X * position;
+
+    ctx.drawImage(this.playerImg, CONSTANTS.SPRITE_FRAME, 0,
+      CONSTANTS.SPRITE_X, CONSTANTS.SPRITE_Y,
+      CONSTANTS.SPRITE_POS_X, CONSTANTS.SPRITE_POS_Y,
+      this.x, this.y)
+
+    CONSTANTS.GAME_FRAME++;
     requestAnimationFrame(this.animate.bind(this, ctx))
   }
 }

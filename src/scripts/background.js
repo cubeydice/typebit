@@ -25,7 +25,7 @@ export default class Background {
   }
 
   animate(ctx, dimensions) {
-    ctx.clearRect(0, 0, dimensions.width, dimensions.height);
+    ctx.clearRect.bind(this, 0, 0, dimensions.width, dimensions.height);
 
     this.layers.forEach((layer) => {
       layer.update();
