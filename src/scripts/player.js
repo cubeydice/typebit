@@ -1,6 +1,6 @@
 const CONSTANTS = {
-  PLAYER_SPEED: 0,
   PLAYER_HEALTH: 100,
+  PLAYER_SPEED: 9, //higher num === slower
   PLAYER_WIDTH: 64,
   PLAYER_HEIGHT: 64,
   SPRITE_WALK: 'assets/game/player/walk.png',
@@ -10,7 +10,6 @@ const CONSTANTS = {
   SPRITE_IDLE: 'assets/game/player/idle.png', //for future use in blockades
   GAME_FRAME: 0,
   SPRITE_FRAME: 0,
-  STAGGER_FRAME: 9,
   SPRITE_X: 32,
   SPRITE_Y: 32,
   SPRITE_POS_X: 100,
@@ -23,7 +22,9 @@ export default class Player {
     this.dimensions = dimensions;
     this.x = CONSTANTS.PLAYER_WIDTH;
     this.y = CONSTANTS.PLAYER_HEIGHT;
-    this.speed = CONSTANTS.PLAYER_SPEED;
+    this.pos_x = CONSTANTS.SPRITE_POS_X;
+    this.pos_y = CONSTANTS.SPRITE_POS_Y;
+    // this.speed = CONSTANTS.PLAYER_SPEED;
     this.health = CONSTANTS.PLAYER_HEALTH;
     this.spriteAnim = [CONSTANTS.SPRITE_WALK, CONSTANTS.SPRITE_RUN,
       CONSTANTS.SPRITE_ATTACK, CONSTANTS.SPRITE_HURT, CONSTANTS.SPRITE_IDLE]
@@ -33,13 +34,13 @@ export default class Player {
 
   walk() {
     this.playerImg.src = this.spriteAnim[0];
-    CONSTANTS.STAGGER_FRAME = 9;
+    CONSTANTS.PLAYER_SPEED = 9;
   }
 
   run() {
     //animation for moderate typing speed
     this.playerImg.src = this.spriteAnim[1];
-    CONSTANTS.STAGGER_FRAME = 5;
+    CONSTANTS.PLAYER_SPEED = 5;
   }
 
   attack() {
@@ -50,14 +51,14 @@ export default class Player {
   hurt() {
     //animation and decrease in health for when inaccurate typing is detected
     this.playerImg.src = this.spriteAnim[3];
-    CONSTANTS.STAGGER_FRAME = 12;
+    CONSTANTS.PLAYER_SPEED = 12;
     CONSTANTS.PLAYER_HEALTH -= 10;
   }
 
   animate(ctx) {
     ctx.clearRect.bind(this, 0, 0, this.dimensions.width, this.dimensions.height)
 
-    let position = Math.floor(CONSTANTS.GAME_FRAME/CONSTANTS.STAGGER_FRAME) % 5;
+    let position = Math.floor(CONSTANTS.GAME_FRAME/CONSTANTS.PLAYER_SPEED) % 5;
     CONSTANTS.SPRITE_FRAME = CONSTANTS.SPRITE_X * position;
 
     ctx.drawImage(this.playerImg, CONSTANTS.SPRITE_FRAME, 0,
