@@ -2,7 +2,7 @@ import Player from "./player";
 import Enemy from "./enemy";
 import Background from "./background";
 export default class TypeBit {
-  static NUM_ENEMIES = 10;
+  static NUM_ENEMIES = 2;
 
   constructor(canvas) {
     this.ctx = canvas.getContext("2d");
@@ -10,40 +10,75 @@ export default class TypeBit {
       width: canvas.width,
       height: canvas.height
     };
-    this.enemies = [];
-    this.addEnemies();
-  }
-
-  play() {
-    this.running = true
+    this.wordsPerMin = 0;
     this.bg = new Background(this.ctx);
     this.player = new Player(this.dimensions)
     this.enemy = new Enemy(this.dimensions)
-    this.animate()
+    this.enemies = [];
+    this.score = 0;
+    this.typed = "";
+  }
+
+  run() {
+    this.animate();
+
+  }
+
+  play() {
+    this.running = true;
+    this.animate();
+    setInterval(this.addEnemies.bind(this), 3000)
   }
 
   restart() {
+    this.running = false
     //need to add restart functionality to restart button
-    this.running = false;
     this.score = 0;
-    this.bg = new Background(this.ctx);
-    this.player = new Player(this.dimensions);
+    this.player.health = 100;
+    this.enemies = [];
+    this.play();
   }
 
+  // type(e) {
+    //   if(!this.running) {
+      //     this.play();
+      //   }
+      // }
+
   gameOver() {
-    //game over if player runs out of health
+    this.player.outOfHealth()
   }
 
   animate() {
-    this.bg.animate(this.ctx, this.dimensions)
-    this.player.animate(this.ctx)
-    this.enemies.forEach(enemy => {
-      enemy.animate(this.ctx)
-      if (enemy.pos_x < 0) {
-        this.enemies.splice(enemies.indexOf(enemy), 1)
-      }
-      console.log("Animating enemies...")
-    })
+    this.ctx.clearRect.bind(this, 0, 0, this.dimensions.width, this.dimensions.height);
+    this.bg.draw(this.ctx)
+    this.player.draw(this.ctx, this.wordsPerMin)
+    if (this.running) {
+      this.enemies.forEach(enemy => {
+        if (this.typed !== this.enemy.words) {
+          enemy.draw(this.ctx)
+        }
+        //removes enemy if leave the screen
+        //need to change to right bound
+        if (enemy.pos_x < 0) {
+          console.log(this.enemies)
+          this.enemies.splice(this.enemies.indexOf(enemy), 1)
+        }
+      })
+      this.status(this.ctx)
+    }
+
+    if (this.gameOver()) {
+      console.log("Game Over")
+    }
+
+    requestAnimationFrame(this.animate.bind(this))
+  }
+
+  status(ctx) {
+    ctx.font = "40px VT323";
+    ctx.strokeText(`score: ${this.score}`, 960, 70)
+    ctx.strokeText(`health: ${this.player.health}`, 40, 70)
   }
 
   addEnemies() {

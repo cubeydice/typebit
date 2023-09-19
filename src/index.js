@@ -1,5 +1,5 @@
-import Background from "./scripts/background";
 import TypeBit from "./scripts/game";
+// import text from "./scripts/words";
 
 const canvas = document.getElementById('canvas');
 // const dimensions = { width: canvas.width, height: canvas.height };

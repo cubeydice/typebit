@@ -12,7 +12,7 @@ export default class Background {
     this.bg = ['assets/game/background/nature_2/1.png',
           'assets/game/background/nature_2/2.png',
           'assets/game/background/nature_5/3.png',
-          'assets/game/background/nature_5/4.png' ];
+          'assets/game/background/nature_5/4.png'];
     this.layers = [];
 
     let i = 0
@@ -24,17 +24,13 @@ export default class Background {
     })
   }
 
-  animate(ctx, dimensions) {
-    ctx.clearRect.bind(this, 0, 0, dimensions.width, dimensions.height);
-
+  draw(ctx) {
     this.layers.forEach((layer) => {
       layer.update();
       layer.draw();
     })
 
     CONSTANTS.GAME_FRAME--
-
-    requestAnimationFrame(this.animate.bind(this, ctx, dimensions));
   }
 }
 class Layer {

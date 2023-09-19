@@ -20,10 +20,6 @@ const CONSTANTS = {
 export default class Player {
   constructor(dimensions) {
     this.dimensions = dimensions;
-    this.x = CONSTANTS.PLAYER_WIDTH;
-    this.y = CONSTANTS.PLAYER_HEIGHT;
-    this.pos_x = CONSTANTS.SPRITE_POS_X;
-    this.pos_y = CONSTANTS.SPRITE_POS_Y;
     // this.speed = CONSTANTS.PLAYER_SPEED;
     this.health = CONSTANTS.PLAYER_HEALTH;
     this.spriteAnim = [CONSTANTS.SPRITE_WALK, CONSTANTS.SPRITE_RUN,
@@ -50,23 +46,47 @@ export default class Player {
 
   hurt() {
     //animation and decrease in health for when inaccurate typing is detected
+    // let hurtAudio = new Audio(CONSTANTS.SOUND_HURT)
+    // hurtAudio.play()
     this.playerImg.src = this.spriteAnim[3];
     CONSTANTS.PLAYER_SPEED = 12;
     CONSTANTS.PLAYER_HEALTH -= 10;
   }
 
-  animate(ctx) {
-    ctx.clearRect.bind(this, 0, 0, this.dimensions.width, this.dimensions.height)
-
+  draw(ctx, wordsPerMin) {
     let position = Math.floor(CONSTANTS.GAME_FRAME/CONSTANTS.PLAYER_SPEED) % 5;
     CONSTANTS.SPRITE_FRAME = CONSTANTS.SPRITE_X * position;
 
-    ctx.drawImage(this.playerImg, CONSTANTS.SPRITE_FRAME, 0,
-      CONSTANTS.SPRITE_X, CONSTANTS.SPRITE_Y,
-      CONSTANTS.SPRITE_POS_X, CONSTANTS.SPRITE_POS_Y,
-      this.x, this.y)
+    ctx.drawImage(this.playerImg, //image file
+      CONSTANTS.SPRITE_FRAME, 0, //position on sprite frame file
+      CONSTANTS.SPRITE_X, CONSTANTS.SPRITE_Y, //size of position on sprite frame file
+      CONSTANTS.SPRITE_POS_X, CONSTANTS.SPRITE_POS_Y, //position on canvas
+      CONSTANTS.PLAYER_WIDTH, CONSTANTS.PLAYER_HEIGHT) //size of sprite on canvas
 
     CONSTANTS.GAME_FRAME++;
-    requestAnimationFrame(this.animate.bind(this, ctx))
+  }
+
+  outOfHealth() {
+    if (this.health < 0) return true;
+    return false;
+  }
+
+  bounds() {
+    return {
+      left: CONSTANTS.SPRITE_POS_X,
+      right: CONSTANTS.SPRITE_POS_X + CONSTANTS.PLAYER_WIDTH,
+      top: CONSTANTS.SPRITE_POS_Y,
+      bottom: CONSTANTS.SPRITE_POS_Y + CONSTANTS.PLAYER_HEIGHT
+    }
+  }
+
+  collidesWith(player, enemy) {
+    //checks if enemy overlaps with player
+    if (player.left > enemy.right || player.right < enemy.left) {
+      this.hurt();
+      setTimeout(this.walk(), 1000);
+      return true;
+    }
+    return false;
   }
 }
