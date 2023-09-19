@@ -11,8 +11,8 @@ export default class Background {
     this.ctx = ctx;
     this.bg = ['assets/game/background/nature_2/1.png',
           'assets/game/background/nature_2/2.png',
-          'assets/game/background/nature_2/3.png',
-          'assets/game/background/nature_2/4.png' ];
+          'assets/game/background/nature_5/3.png',
+          'assets/game/background/nature_5/4.png' ];
     this.layers = [];
 
     let i = 0

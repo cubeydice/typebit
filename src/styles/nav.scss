@@ -17,6 +17,27 @@ img {
     height: 50px;
 }
 
-.menu li:hover {
-    filter: brightness(50%);
+li:hover {
+    opacity: 0.5;
+}
+
+h1 {
+    font-size: 200px;
+    color: white;
+    -webkit-text-stroke-width: 3px;
+    -webkit-text-stroke-color: black;
+    position: absolute;
+    top: 25%;
+    left: 25%;
+    height: -100px;
+}
+
+.start {
+    position: absolute;
+    font-size: 60px;
+    color: white;
+    -webkit-text-stroke-width: 2px;
+    -webkit-text-stroke-color: black;
+    top: 55%;
+    left: 26.5%;
 }

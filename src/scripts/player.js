@@ -14,7 +14,8 @@ const CONSTANTS = {
   SPRITE_X: 32,
   SPRITE_Y: 32,
   SPRITE_POS_X: 100,
-  SPRITE_POS_Y: 410,
+  SPRITE_POS_Y: 440,
+  SOUND_HURT: 'assets/music/effects/destroy.wav'
 }
 
 export default class Player {
