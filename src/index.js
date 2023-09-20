@@ -52,6 +52,8 @@ if (window.mobileCheck()) {
       game.typed += " "
     } else if (e.key === "Control") {
       game.typed = ""
+    } else if (e.key === "Escape") {
+      game.restart();
     }
     else {
       game.typed += e.key;
