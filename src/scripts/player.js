@@ -49,6 +49,8 @@ export default class Player {
     }
     this.playerImg.src = this.spriteAnim.hurt;
     this.health -= 10;
+    this.position = 0;
+    this.hurts = true;
   }
 
   dead() {
@@ -56,10 +58,15 @@ export default class Player {
   }
 
   draw(ctx) {
-    let position = Math.floor(CONSTANTS.GAME_FRAME/CONSTANTS.PLAYER_SPEED) % 5;
+    if (this.outOfHealth() && this.position >= 4){
+    } else if (this.hurts && this.position >= 4) {
+      this.hurts = false;
+      this.walk();
+    } else {
+      this.position = Math.floor(CONSTANTS.GAME_FRAME/CONSTANTS.PLAYER_SPEED) % 5;
+      CONSTANTS.SPRITE_FRAME = CONSTANTS.SPRITE_X * this.position;
 
-    CONSTANTS.SPRITE_FRAME = CONSTANTS.SPRITE_X * position;
-
+    }
     ctx.drawImage(this.playerImg, //image file
       CONSTANTS.SPRITE_FRAME, 0, //position on sprite frame file
       CONSTANTS.SPRITE_X, CONSTANTS.SPRITE_Y, //size of position on sprite frame file

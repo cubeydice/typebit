@@ -54,11 +54,30 @@ export default class TypeBit {
     this.diffultyChange = false;
     title.innerHTML = "typebit"
     start.innerHTML = "press any key to start"
+    clearInterval(this.enemyInterval);
     this.player.walk();
   }
 
   gameOver() {
     return this.player.outOfHealth()
+  }
+
+  changeDifficulty() {
+    if (this.score > 50 && this.score <= 100) {
+      this.max_enemies = 5;
+      this.num_enemies = 3;
+    } else if (this.score > 100 && this.score <= 200) {
+      this.max_enemies = 8;
+      this.num_enemies = 4;
+      this.player.run();
+      if (!this.diffultyChange) {
+        audio.src = fastBGMusic
+        this.diffultyChange = true;
+      }
+    } else if (this.score > 200) {
+      this.max_enemies = 10;
+      this.num_enemies = 4;
+    }
   }
 
   animate() {
@@ -70,7 +89,9 @@ export default class TypeBit {
     /* Game Over Sequence */
     if (this.gameOver() && this.running){
       audio.src = gameOverBGMusic;
-      gameOverAudio.play();
+      if (!audio.muted) {
+        gameOverAudio.play();
+      }
       this.player.dead();
       title.innerHTML = "GAME OVER";
       start.innerHTML = `final score: ${this.score}`;
@@ -79,21 +100,7 @@ export default class TypeBit {
     }
 
     /*Increase difficulty*/
-    if (this.score > 50 && this.score <= 150) {
-      this.max_enemies = 4;
-      this.num_enemies = 2;
-    } else if (this.score > 150 && this.score <= 400) {
-      this.max_enemies = 6;
-      this.num_enemies = 3;
-      this.player.run();
-      if (!this.diffultyChange) {
-        audio.src = fastBGMusic
-        this.diffultyChange = true;
-      }
-    } else if (this.score > 400) {
-      this.max_enemies = 8;
-      this.num_enemies = 4;
-    }
+    this.changeDifficulty();
 
     /*Animate enemies and status if game started*/
     if (this.running) {

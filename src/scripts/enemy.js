@@ -44,15 +44,17 @@ export default class Enemy {
   }
 
   move(ctx) {
-    this.position = Math.floor(CONSTANTS.GAME_FRAME/this.stagger_frame) % 7;
-    CONSTANTS.SPRITE_FRAME = CONSTANTS.SPRITE_X * this.position;
+    if (this.destroyed && this.position >= 6) {
+    } else {
+      this.position = Math.floor(CONSTANTS.GAME_FRAME/this.stagger_frame) % 7;
+      CONSTANTS.SPRITE_FRAME = CONSTANTS.SPRITE_X * this.position;
 
-    ctx.drawImage(this.enemyImg, CONSTANTS.SPRITE_FRAME, this.pos_y,
-      CONSTANTS.SPRITE_X, CONSTANTS.SPRITE_Y,
-      this.pos_x, CONSTANTS.SPRITE_POS_Y,
-      CONSTANTS.ENEMY_WIDTH, CONSTANTS.ENEMY_HEIGHT)
-
-    CONSTANTS.GAME_FRAME++;
+      ctx.drawImage(this.enemyImg, CONSTANTS.SPRITE_FRAME, this.pos_y,
+        CONSTANTS.SPRITE_X, CONSTANTS.SPRITE_Y,
+        this.pos_x, CONSTANTS.SPRITE_POS_Y,
+        CONSTANTS.ENEMY_WIDTH, CONSTANTS.ENEMY_HEIGHT)
+        CONSTANTS.GAME_FRAME++;
+    }
     this.pos_x -= this.speed/2
   }
 
