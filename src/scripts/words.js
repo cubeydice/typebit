@@ -8,7 +8,7 @@ export const WORDS = [
     "my favorite word is lunch",
     "beyonce is my QUEEN",
     "slime slime slime",
-    "what is love",
+    "what is love?",
     "baby don't hurt me",
     "Ew! A pink rabbit!",
     "do or do not, there is no try",
@@ -19,8 +19,15 @@ export const WORDS = [
     "ask salmon else",
     "slime slime slime",
     "krusty krab pizza is the pizza",
-    "uwu",
+    "uwu~",
     "go beyond plus ultra",
-    "I wanna be the very best"
+    "I wanna be the very best",
+    "I'm gonna be hokage!",
+    "yer a wizard, bunny",
+    "slimes not limes",
+    "dedicate your heart",
+    "time stops for no one",
+    "I'm the problem, it's me",
+    "rise and slime"
 ]
 
