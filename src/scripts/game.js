@@ -5,11 +5,12 @@ import Background from "./background";
 const title = document.getElementById("title");
 const start = document.getElementById("start");
 const audio = document.getElementById("bg-music");
+const introBGMusic = 'assets/music/bg/memory.mp3';
 const gameOverBGMusic = 'assets/music/bg/churchofsaints.mp3';
 const enemyDestroyAudio = new Audio('assets/music/effects/destroy2.wav');
 const gameOverAudio = new Audio('assets/music/effects/game_over.mp3');
 enemyDestroyAudio.volume = 0.2;
-gameOverAudio.volume = 0.5;
+gameOverAudio.volume = 0.3;
 
 export default class TypeBit {
   constructor(canvas) {
@@ -47,7 +48,7 @@ export default class TypeBit {
     this.player.health = 50;
     this.enemies = [];
     this.typed = "";
-    clearInterval(this.enemyInterval)
+    audio.src = introBGMusic;
     title.innerHTML = "typebit"
     start.innerHTML = "press any key to start"
     this.player.walk();
@@ -65,11 +66,12 @@ export default class TypeBit {
 
     /* Game Over Sequence */
     if (this.gameOver()){
-      if (!audio.muted) {
-        gameOverAudio.play()
-      }
       audio.src = gameOverBGMusic
-      this.player.idle()
+      this.player.dead()
+      title.innerHTML = "GAME OVER"
+      start.innerHTML = `final score: ${this.score}`
+      clearInterval(this.enemyInterval)
+      this.running = false;
     }
 
     /*Increase difficulty*/
@@ -118,7 +120,7 @@ export default class TypeBit {
     }
 
 
-    requestAnimationFrame(this.animate.bind(this))
+    this.animReq = requestAnimationFrame(this.animate.bind(this))
   }
 
   status(ctx) {

@@ -6,7 +6,7 @@ const retry = document.getElementById("retry");
 const mute = document.getElementById("bg-mute");
 const audio = document.getElementById("bg-music");
 const invalidKeys = ["Tab","CapsLock", "Alt", "AltGraph", "Fn", "Super", "Symbol", "NumLock", "Meta", "Hyper", "Shift"]
-audio.volume = 0.5;
+audio.volume = 0.2;
 let gameStarted = false;
 
 //check if user is using mobile device
@@ -39,7 +39,7 @@ if (window.mobileCheck()) {
       game.typed += e.key;
     }
 
-    if (!game.running) {
+    if (game.typed !== "" && !game.running) {
       game.play();
       gameStarted = true;
     }

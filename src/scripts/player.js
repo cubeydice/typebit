@@ -31,7 +31,6 @@ export default class Player {
       run: CONSTANTS.SPRITE_RUN,
       attack: CONSTANTS.SPRITE_ATTACK,
       hurt: CONSTANTS.SPRITE_HURT,
-      idle: CONSTANTS.SPRITE_IDLE,
       dead: CONSTANTS.SPRITE_DEAD
     }
     this.playerImg = new Image();
@@ -73,7 +72,9 @@ export default class Player {
       CONSTANTS.SPRITE_POS_X, CONSTANTS.SPRITE_POS_Y, //position on canvas
       CONSTANTS.PLAYER_WIDTH, CONSTANTS.PLAYER_HEIGHT) //size of sprite on canvas
 
-    CONSTANTS.GAME_FRAME++;
+    if (!(this.outOfHealth() && position >= 5)){
+      CONSTANTS.GAME_FRAME++;
+    }
   }
 
   outOfHealth() {
