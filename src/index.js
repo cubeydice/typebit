@@ -5,8 +5,7 @@ const mobileError = document.getElementById('mobile-error');
 const retry = document.getElementById("retry");
 const mute = document.getElementById("bg-mute");
 const audio = document.getElementById("bg-music");
-const invalidKeys = ["Enter", "Tab","CapsLock", "Alt", "AltGraph", "Control", "Fn", "Super", "Symbol",
-"Shift", "NumLock", "Meta", "Hyper"]
+const invalidKeys = ["Tab","CapsLock", "Alt", "AltGraph", "Fn", "Super", "Symbol", "NumLock", "Meta", "Hyper", "Shift"]
 audio.volume = 0.5;
 let gameStarted = false;
 
@@ -30,7 +29,13 @@ if (window.mobileCheck()) {
     if (e.key === "Backspace") {
       game.typed = game.typed.slice(0,-1)
     } else if (invalidKeys.includes(e.key)) {
-    } else {
+    } else if (e.key === "Enter") {
+      game.typed += " "
+    } else if (e.key === "Control") {
+      //clears typed words
+      game.typed = ""
+    }
+    else {
       game.typed += e.key;
     }
 

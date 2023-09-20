@@ -5,7 +5,7 @@ import Background from "./background";
 const title = document.getElementById("title");
 const start = document.getElementById("start");
 const audio = document.getElementById("bg-music");
-const gameOverBGMusic = 'assets/bg/churchofsaints.mp3';
+const gameOverBGMusic = 'assets/music/bg/churchofsaints.mp3';
 const enemyDestroyAudio = new Audio('assets/music/effects/destroy2.wav');
 const gameOverAudio = new Audio('assets/music/effects/game_over.mp3');
 enemyDestroyAudio.volume = 0.2;
@@ -64,14 +64,14 @@ export default class TypeBit {
     this.player.draw(this.ctx)
 
     /* Game Over Sequence */
-    if (this.running && this.gameOver()){
+    if (this.gameOver()){
       if (!audio.muted) {
         gameOverAudio.play()
       }
-      this.gameOverData(this.ctx)
       audio.src = gameOverBGMusic
       this.player.idle()
     }
+
     /*Increase difficulty*/
     if (this.score > 100 && this.score <= 250) {
       this.max_enemies = 6;
@@ -88,7 +88,8 @@ export default class TypeBit {
     /*Animate enemies and status if game started*/
     if (this.running) {
       this.enemies.forEach(enemy => {
-        if (this.typed === enemy.words) {
+        //Destroy enemy is correct words typed
+        if (this.typed === (enemy.words + " ")) {
           if (!audio.muted) {
             enemyDestroyAudio.play()
           }
@@ -126,11 +127,6 @@ export default class TypeBit {
     ctx.fillText(`health: ${this.player.health}`, 40, 70)
     ctx.font = "64px VT323";
     ctx.fillText(this.typed, 200, 280)
-  }
-
-  gameOverData(ctx) {
-    ctx.font = "120px VT323";
-    ctx.fillText(`final score: ${this.score}`, 200, 100)
   }
 
   addEnemies() {
