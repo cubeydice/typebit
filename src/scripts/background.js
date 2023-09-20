@@ -19,8 +19,14 @@ export default class Background {
     this.bg.forEach(img => {
       const image = new Image();
       image.src = img;
-      this.layers.push(new Layer(image, this.ctx, CONSTANTS.SPEED_MODS[i]));
+      this.layers.push(new Layer(image, this.ctx, CONSTANTS.SPEED_MODS[i], CONSTANTS.GAME_SPEED));
       i++;
+    })
+  }
+
+  changeSpeed(speed) {
+    this.layers.forEach((layer) => {
+      layer.changeSpeed(speed);
     })
   }
 
@@ -34,7 +40,7 @@ export default class Background {
   }
 }
 class Layer {
-  constructor(img, ctx, speedMod) {
+  constructor(img, ctx, speedMod, speed) {
     this.x = 0;
     this.y = 0;
     this.ctx = ctx;
@@ -42,13 +48,17 @@ class Layer {
     this.height = CONSTANTS.HEIGHT;
     this.img = img;
     this.speedMod = speedMod;
-    this.speed = CONSTANTS.GAME_SPEED * this.speedMod
+    this.speed = speed * this.speedMod
     this.draw = this.draw.bind(this)
   }
 
   update() {
-    this.speed = CONSTANTS.GAME_SPEED * this.speedMod
+    // this.speed = CONSTANTS.GAME_SPEED * this.speedMod
     this.x = CONSTANTS.GAME_FRAME * this.speed % (this.width);
+  }
+
+  changeSpeed(speed) {
+    this.speed = speed;
   }
 
   draw() {

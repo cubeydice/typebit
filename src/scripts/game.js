@@ -50,6 +50,7 @@ export default class TypeBit {
     this.player.health = 50;
     this.enemies = [];
     this.typed = "";
+    this.bg.changeSpeed(1);
     audio.src = introBGMusic;
     this.diffultyChange = false;
     title.innerHTML = "typebit"
@@ -70,6 +71,7 @@ export default class TypeBit {
       this.max_enemies = 8;
       this.num_enemies = 4;
       this.player.run();
+      this.bg.changeSpeed(2);
       if (!this.diffultyChange) {
         audio.src = fastBGMusic
         this.diffultyChange = true;
@@ -93,6 +95,7 @@ export default class TypeBit {
         gameOverAudio.play();
       }
       this.player.dead();
+      this.bg.changeSpeed(0);
       title.innerHTML = "GAME OVER";
       start.innerHTML = `final score: ${this.score}`;
       clearInterval(this.enemyInterval);
