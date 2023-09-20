@@ -43,8 +43,9 @@ This project will be implemented with the following technologies:
 
 [Tiny Hero Sprites](https://craftpix.net/freebies/free-pixel-art-tiny-hero-sprites/)
 
-
 [Nature Background](https://craftpix.net/freebies/free-nature-backgrounds-pixel-art/)
+
+[Hearts by Nicole Marie T](https://nicolemariet.itch.io/pixel-heart-animation-32x32-16x16-freebie)
 
 ### Music
 [Sounds by Dagurasu](https://dagurasusketch.itch.io/retrosounds)

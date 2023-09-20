@@ -5,9 +5,7 @@ const CONSTANTS = {
   PLAYER_HEIGHT: 64, //size of player on canvas
   SPRITE_WALK: 'assets/game/player/walk.png',
   SPRITE_RUN: 'assets/game/player/run.png',
-  SPRITE_ATTACK: 'assets/game/player/attack.png',
   SPRITE_HURT: 'assets/game/player/hurt.png',
-  SPRITE_IDLE: 'assets/game/player/idle.png', //for future use in blockades
   SPRITE_DEAD: 'assets/game/player/dead.png',
   GAME_FRAME: 0, //initial game frame
   SPRITE_FRAME: 0, //starting frame
@@ -45,10 +43,6 @@ export default class Player {
     this.playerImg.src = this.spriteAnim.run;
   }
 
-  attack() {
-    this.playerImg.src = this.spriteAnim.attack;
-  }
-
   hurt() {
     if (!audio.muted) {
       hurtAudio.play()
@@ -58,7 +52,6 @@ export default class Player {
   }
 
   dead() {
-    //animation for fast typing speed
     this.playerImg.src = this.spriteAnim.dead;
   }
 
@@ -91,7 +84,6 @@ export default class Player {
   }
 
   collidesWith(player, enemy) {
-    //checks if enemy overlaps with player
     if (player.right > enemy.left) {
       return true;
     }

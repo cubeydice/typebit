@@ -64,16 +64,17 @@ export default class TypeBit {
   animate() {
     /*Animate background and player*/
     this.ctx.clearRect.bind(this, 0, 0, this.dimensions.width, this.dimensions.height);
-    this.bg.draw(this.ctx)
-    this.player.draw(this.ctx)
+    this.bg.draw(this.ctx);
+    this.player.draw(this.ctx);
 
     /* Game Over Sequence */
     if (this.gameOver() && this.running){
-      audio.src = gameOverBGMusic
-      this.player.dead()
-      title.innerHTML = "GAME OVER"
-      start.innerHTML = `final score: ${this.score}`
-      clearInterval(this.enemyInterval)
+      audio.src = gameOverBGMusic;
+      gameOverAudio.play();
+      this.player.dead();
+      title.innerHTML = "GAME OVER";
+      start.innerHTML = `final score: ${this.score}`;
+      clearInterval(this.enemyInterval);
       this.running = false;
     }
 
@@ -111,21 +112,20 @@ export default class TypeBit {
 
         //Remove enemy if out of bounds
         if (enemy.bounds().right < 0) {
-          console.log(this.enemies)
-          this.enemies.splice(this.enemies.indexOf(enemy), 1)
+          this.enemies.splice(this.enemies.indexOf(enemy), 1);
         }
 
         //Enemy collision with player when not already destroyed
         if (this.player.collidesWith(this.player.bounds(), enemy.bounds())
         && enemy.destroyed === false) {
-          console.log("Ow!")
           this.player.hurt();
-          this.enemies.splice(this.enemies.indexOf(enemy), 1)
+          this.enemies.splice(this.enemies.indexOf(enemy), 1);
         }
       })
-      this.status(this.ctx)
-    }
 
+      //Game data info
+      this.status(this.ctx);
+    }
 
     this.animReq = requestAnimationFrame(this.animate.bind(this))
   }
@@ -147,6 +147,5 @@ export default class TypeBit {
         this.enemies.push(new Enemy(this.dimensions, speed, pos));
       }
     }
-    console.log(this.enemies)
   }
 }
