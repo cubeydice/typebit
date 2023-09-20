@@ -1,5 +1,5 @@
 const CONSTANTS = {
-  GAME_SPEED: 2,
+  GAME_SPEED: 1,
   GAME_FRAME: 0,
   SPEED_MODS: [0, 0.5, 0.7, 0.9],
   WIDTH: 1152,

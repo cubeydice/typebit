@@ -1,15 +1,13 @@
 import TypeBit from "./scripts/game";
-// import text from "./scripts/words";
 
 const canvas = document.getElementById('canvas');
-// const dimensions = { width: canvas.width, height: canvas.height };
-// const context = canvas.getContext("2d");
 const mobileError = document.getElementById('mobile-error');
 const retry = document.getElementById("retry");
 const mute = document.getElementById("bg-mute");
 const audio = document.getElementById("bg-music");
 const invalidKeys = ["Enter", "Tab","CapsLock", "Alt", "AltGraph", "Control", "Fn", "Super", "Symbol",
 "Shift", "NumLock", "Meta", "Hyper"]
+audio.volume = 0.5;
 let gameStarted = false;
 
 //check if user is using mobile device

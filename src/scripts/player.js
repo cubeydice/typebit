@@ -1,26 +1,27 @@
 const CONSTANTS = {
-  PLAYER_HEALTH: 100,
-  PLAYER_SPEED: 9, //higher num === slower
-  PLAYER_WIDTH: 64,
-  PLAYER_HEIGHT: 64,
+  PLAYER_HEALTH: 50,
+  PLAYER_SPEED: 9, //higher num === slower; stagger frame speed
+  PLAYER_WIDTH: 64, //size of player on canvas
+  PLAYER_HEIGHT: 64, //size of player on canvas
   SPRITE_WALK: 'assets/game/player/walk.png',
   SPRITE_RUN: 'assets/game/player/run.png',
   SPRITE_ATTACK: 'assets/game/player/attack.png',
   SPRITE_HURT: 'assets/game/player/hurt.png',
   SPRITE_IDLE: 'assets/game/player/idle.png', //for future use in blockades
-  GAME_FRAME: 0,
-  SPRITE_FRAME: 0,
-  SPRITE_X: 32,
-  SPRITE_Y: 32,
-  SPRITE_POS_X: 100,
-  SPRITE_POS_Y: 440,
+  GAME_FRAME: 0, //initial game frame
+  SPRITE_FRAME: 0, //starting frame
+  SPRITE_X: 32, //sprite frame size
+  SPRITE_Y: 32, //sprite frame size
+  SPRITE_POS_X: 100, //starting position
+  SPRITE_POS_Y: 440, //starting position
   SOUND_HURT: 'assets/music/effects/destroy.wav'
 }
+
+const audio = document.getElementById("bg-music");
 
 export default class Player {
   constructor(dimensions) {
     this.dimensions = dimensions;
-    // this.speed = CONSTANTS.PLAYER_SPEED;
     this.health = CONSTANTS.PLAYER_HEALTH;
     this.spriteAnim = [CONSTANTS.SPRITE_WALK, CONSTANTS.SPRITE_RUN,
       CONSTANTS.SPRITE_ATTACK, CONSTANTS.SPRITE_HURT, CONSTANTS.SPRITE_IDLE]
@@ -46,11 +47,12 @@ export default class Player {
 
   hurt() {
     //animation and decrease in health for when inaccurate typing is detected
-    // let hurtAudio = new Audio(CONSTANTS.SOUND_HURT)
-    // hurtAudio.play()
+    if (!audio.muted) {
+      this.hurtAudio = new Audio(CONSTANTS.SOUND_HURT)
+      this.hurtAudio.play()
+    }
     this.playerImg.src = this.spriteAnim[3];
-    CONSTANTS.PLAYER_SPEED = 12;
-    CONSTANTS.PLAYER_HEALTH -= 10;
+    this.health -= 10;
   }
 
   draw(ctx, wordsPerMin) {
@@ -67,7 +69,7 @@ export default class Player {
   }
 
   outOfHealth() {
-    if (this.health < 0) return true;
+    if (this.health <= 0) return true;
     return false;
   }
 
@@ -82,9 +84,7 @@ export default class Player {
 
   collidesWith(player, enemy) {
     //checks if enemy overlaps with player
-    if (player.left > enemy.right || player.right < enemy.left) {
-      this.hurt();
-      setTimeout(this.walk(), 1000);
+    if (player.right > enemy.left) {
       return true;
     }
     return false;
