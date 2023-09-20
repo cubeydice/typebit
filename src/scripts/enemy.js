@@ -22,10 +22,20 @@ export default class Enemy {
     this.enemyImg = new Image();
     this.enemyImg.src = 'assets/game/enemy/slime.png'
     this.words = WORDS[Math.floor(Math.random() * WORDS.length)]
+    this.words_y = CONSTANTS.SPRITE_POS_Y - Math.random() * 100
     this.score = this.words.length
   }
 
   draw(ctx) {
+    ctx.beginPath();
+    ctx.fillStyle = "white";
+    ctx.roundRect(this.pos_x - this.words.length - 9, this.words_y - 28, (this.words.length * 10) + 10, 22, [10]);
+    ctx.fill();
+
+    ctx.fillStyle = "black";
+    // ctx.strokeStyle = "black";
+    ctx.font = "24px VT323";
+    ctx.fillText(this.words, this.pos_x - this.words.length, this.words_y - 10)
     ctx.clearRect.bind(this, 0, 0, this.dimensions.width, this.dimensions.height)
     this.move(ctx)
   }

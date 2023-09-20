@@ -1,8 +1,12 @@
 import Player from "./player";
 import Enemy from "./enemy";
 import Background from "./background";
+
+const title = document.getElementById("title")
+const start = document.getElementById("start")
+
 export default class TypeBit {
-  static NUM_ENEMIES = 2;
+  static NUM_ENEMIES = 1;
 
   constructor(canvas) {
     this.ctx = canvas.getContext("2d");
@@ -20,39 +24,40 @@ export default class TypeBit {
   }
 
   run() {
+    this.running = false;
     this.animate();
-
   }
 
   play() {
     this.running = true;
-    this.animate();
-    setInterval(this.addEnemies.bind(this), 3000)
+    this.typed = "";
+    this.enemyInterval = setInterval(this.addEnemies.bind(this), 2000)
+    title.innerHTML = ""
+    start.innerHTML = ""
   }
 
   restart() {
-    this.running = false
-    //need to add restart functionality to restart button
+    this.running = false;
     this.score = 0;
     this.player.health = 100;
     this.enemies = [];
-    this.play();
+    this.typed = "";
+    clearInterval(this.enemyInterval)
+    title.innerHTML = "typebit"
+    start.innerHTML = "press any key to start"
   }
-
-  // type(e) {
-    //   if(!this.running) {
-      //     this.play();
-      //   }
-      // }
 
   gameOver() {
     this.player.outOfHealth()
   }
 
   animate() {
+    /*Animate background and player*/
     this.ctx.clearRect.bind(this, 0, 0, this.dimensions.width, this.dimensions.height);
     this.bg.draw(this.ctx)
     this.player.draw(this.ctx, this.wordsPerMin)
+
+    /*Animate enemies and status if game started*/
     if (this.running) {
       this.enemies.forEach(enemy => {
         if (this.typed !== this.enemy.words) {
@@ -77,9 +82,12 @@ export default class TypeBit {
 
   status(ctx) {
     ctx.font = "40px VT323";
-    ctx.strokeText(`score: ${this.score}`, 960, 70)
-    ctx.strokeText(`health: ${this.player.health}`, 40, 70)
+    ctx.fillText(`score: ${this.score}`, 960, 70)
+    ctx.fillText(`health: ${this.player.health}`, 40, 70)
+    ctx.font = "64px VT323";
+    ctx.fillText(this.typed, 110, 280)
   }
+
 
   addEnemies() {
     for (let i = 0; i < TypeBit.NUM_ENEMIES; i++){

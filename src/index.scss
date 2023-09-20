@@ -1,9 +1,10 @@
 @import './styles/css_reset.scss', './styles/nav.scss', './styles/background.scss';
 
 body {
+    background: white;
     font-family: 'VT323', monospace;
     position: absolute;
-    top: 25.5%;
+    top: 30%;
     left: 50%;
     margin-right: 50%;
     transform: translate(-50%, -50%);

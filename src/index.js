@@ -5,9 +5,12 @@ const canvas = document.getElementById('canvas');
 // const dimensions = { width: canvas.width, height: canvas.height };
 // const context = canvas.getContext("2d");
 const mobileError = document.getElementById('mobile-error');
-const retry = document.getElementById("retry")
-const mute = document.getElementById("bg-mute")
-const audio = document.getElementById("bg-music")
+const retry = document.getElementById("retry");
+const mute = document.getElementById("bg-mute");
+const audio = document.getElementById("bg-music");
+const invalidKeys = ["Enter", "Tab","CapsLock", "Alt", "AltGraph", "Control", "Fn", "Super", "Symbol",
+"Shift", "NumLock", "Meta", "Hyper"]
+let gameStarted = false;
 
 //check if user is using mobile device
 window.mobileCheck = function() {
@@ -22,7 +25,22 @@ if (window.mobileCheck()) {
 } else {
   // Play Game
   const game = new TypeBit(canvas);
-  game.play();
+  game.run();
+
+  window.addEventListener('keydown', function (e) {
+
+    if (e.key === "Backspace") {
+      game.typed = game.typed.slice(0,-1)
+    } else if (invalidKeys.includes(e.key)) {
+    } else {
+      game.typed += e.key;
+    }
+
+    if (!game.typed !== "" && !game.running) {
+      game.play();
+      gameStarted = true;
+    }
+  }, false);
 
   //Restart Game
   const restart = (e) => {
@@ -45,5 +63,6 @@ if (window.mobileCheck()) {
   }
 
   mute.addEventListener("click", muteAudio)
+
 }
 
