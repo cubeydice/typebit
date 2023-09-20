@@ -62,8 +62,9 @@ export default class Player {
     this.playerImg.src = this.spriteAnim.dead;
   }
 
-  draw(ctx, wordsPerMin) {
+  draw(ctx) {
     let position = Math.floor(CONSTANTS.GAME_FRAME/CONSTANTS.PLAYER_SPEED) % 5;
+
     CONSTANTS.SPRITE_FRAME = CONSTANTS.SPRITE_X * position;
 
     ctx.drawImage(this.playerImg, //image file
@@ -72,9 +73,7 @@ export default class Player {
       CONSTANTS.SPRITE_POS_X, CONSTANTS.SPRITE_POS_Y, //position on canvas
       CONSTANTS.PLAYER_WIDTH, CONSTANTS.PLAYER_HEIGHT) //size of sprite on canvas
 
-    if (!(this.outOfHealth() && position >= 5)){
-      CONSTANTS.GAME_FRAME++;
-    }
+    CONSTANTS.GAME_FRAME++;
   }
 
   outOfHealth() {

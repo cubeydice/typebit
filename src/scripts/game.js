@@ -6,6 +6,7 @@ const title = document.getElementById("title");
 const start = document.getElementById("start");
 const audio = document.getElementById("bg-music");
 const introBGMusic = 'assets/music/bg/memory.mp3';
+const fastBGMusic = 'assets/music/bg/mountainoftrials.mp3';
 const gameOverBGMusic = 'assets/music/bg/churchofsaints.mp3';
 const enemyDestroyAudio = new Audio('assets/music/effects/destroy2.wav');
 const gameOverAudio = new Audio('assets/music/effects/game_over.mp3');
@@ -20,13 +21,14 @@ export default class TypeBit {
       height: canvas.height
     };
     this.num_enemies = 1;
-    this.max_enemies = 4;
+    this.max_enemies = 3;
     this.enemies = [];
     this.score = 0;
     this.typed = "";
     this.bg = new Background(this.ctx);
     this.player = new Player(this.dimensions)
     this.enemy = new Enemy(this.dimensions)
+    this.diffultyChange = false;
   }
 
   run() {
@@ -37,7 +39,7 @@ export default class TypeBit {
   play() {
     this.running = true;
     this.typed = "";
-    this.enemyInterval = setInterval(this.addEnemies.bind(this), 2000)
+    this.enemyInterval = setInterval(this.addEnemies.bind(this), 1000)
     title.innerHTML = ""
     start.innerHTML = ""
   }
@@ -49,6 +51,7 @@ export default class TypeBit {
     this.enemies = [];
     this.typed = "";
     audio.src = introBGMusic;
+    this.diffultyChange = false;
     title.innerHTML = "typebit"
     start.innerHTML = "press any key to start"
     this.player.walk();
@@ -65,7 +68,7 @@ export default class TypeBit {
     this.player.draw(this.ctx)
 
     /* Game Over Sequence */
-    if (this.gameOver()){
+    if (this.gameOver() && this.running){
       audio.src = gameOverBGMusic
       this.player.dead()
       title.innerHTML = "GAME OVER"
@@ -75,15 +78,19 @@ export default class TypeBit {
     }
 
     /*Increase difficulty*/
-    if (this.score > 100 && this.score <= 250) {
-      this.max_enemies = 6;
+    if (this.score > 50 && this.score <= 150) {
+      this.max_enemies = 4;
       this.num_enemies = 2;
-    } else if (this.score > 250 && this.score <= 400) {
-      this.max_enemies = 8;
+    } else if (this.score > 150 && this.score <= 400) {
+      this.max_enemies = 6;
       this.num_enemies = 3;
       this.player.run();
+      if (!this.diffultyChange) {
+        audio.src = fastBGMusic
+        this.diffultyChange = true;
+      }
     } else if (this.score > 400) {
-      this.max_enemies = 10;
+      this.max_enemies = 8;
       this.num_enemies = 4;
     }
 
