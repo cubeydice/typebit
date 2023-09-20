@@ -18,7 +18,6 @@ export default class TypeBit {
       width: canvas.width,
       height: canvas.height
     };
-    this.wordsPerMin = 0;
     this.num_enemies = 1;
     this.max_enemies = 4;
     this.enemies = [];
@@ -62,7 +61,7 @@ export default class TypeBit {
     /*Animate background and player*/
     this.ctx.clearRect.bind(this, 0, 0, this.dimensions.width, this.dimensions.height);
     this.bg.draw(this.ctx)
-    this.player.draw(this.ctx, this.wordsPerMin)
+    this.player.draw(this.ctx)
 
     /* Game Over Sequence */
     if (this.running && this.gameOver()){
@@ -72,7 +71,6 @@ export default class TypeBit {
       this.gameOverData(this.ctx)
       audio.src = gameOverBGMusic
       this.player.idle()
-      this.running = false
     }
     /*Increase difficulty*/
     if (this.score > 100 && this.score <= 250) {

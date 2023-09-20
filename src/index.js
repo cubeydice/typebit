@@ -34,7 +34,7 @@ if (window.mobileCheck()) {
       game.typed += e.key;
     }
 
-    if (!game.typed !== "" && !game.running) {
+    if (!game.running) {
       game.play();
       gameStarted = true;
     }
