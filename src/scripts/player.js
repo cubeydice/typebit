@@ -8,6 +8,7 @@ const CONSTANTS = {
   SPRITE_ATTACK: 'assets/game/player/attack.png',
   SPRITE_HURT: 'assets/game/player/hurt.png',
   SPRITE_IDLE: 'assets/game/player/idle.png', //for future use in blockades
+  SPRITE_DEAD: 'assets/game/player/dead.png',
   GAME_FRAME: 0, //initial game frame
   SPRITE_FRAME: 0, //starting frame
   SPRITE_X: 32, //sprite frame size
@@ -18,41 +19,48 @@ const CONSTANTS = {
 }
 
 const audio = document.getElementById("bg-music");
+const hurtAudio = new Audio(CONSTANTS.SOUND_HURT);
+hurtAudio.volume = 0.2;
 
 export default class Player {
   constructor(dimensions) {
     this.dimensions = dimensions;
     this.health = CONSTANTS.PLAYER_HEALTH;
-    this.spriteAnim = [CONSTANTS.SPRITE_WALK, CONSTANTS.SPRITE_RUN,
-      CONSTANTS.SPRITE_ATTACK, CONSTANTS.SPRITE_HURT, CONSTANTS.SPRITE_IDLE]
+    this.spriteAnim = {
+      walk: CONSTANTS.SPRITE_WALK,
+      run: CONSTANTS.SPRITE_RUN,
+      attack: CONSTANTS.SPRITE_ATTACK,
+      hurt: CONSTANTS.SPRITE_HURT,
+      idle: CONSTANTS.SPRITE_IDLE,
+      dead: CONSTANTS.SPRITE_DEAD
+    }
     this.playerImg = new Image();
     this.playerImg.src = CONSTANTS.SPRITE_WALK;
   }
 
   walk() {
-    this.playerImg.src = this.spriteAnim[0];
-    CONSTANTS.PLAYER_SPEED = 9;
+    this.playerImg.src = this.spriteAnim.walk;
   }
 
   run() {
-    //animation for moderate typing speed
-    this.playerImg.src = this.spriteAnim[1];
-    CONSTANTS.PLAYER_SPEED = 5;
+    this.playerImg.src = this.spriteAnim.run;
   }
 
   attack() {
-    //animation for fast typing speed
-    this.playerImg.src = this.spriteAnim[2];
+    this.playerImg.src = this.spriteAnim.attack;
   }
 
   hurt() {
-    //animation and decrease in health for when inaccurate typing is detected
     if (!audio.muted) {
-      this.hurtAudio = new Audio(CONSTANTS.SOUND_HURT)
-      this.hurtAudio.play()
+      hurtAudio.play()
     }
-    this.playerImg.src = this.spriteAnim[3];
+    this.playerImg.src = this.spriteAnim.hurt;
     this.health -= 10;
+  }
+
+  dead() {
+    //animation for fast typing speed
+    this.playerImg.src = this.spriteAnim.dead;
   }
 
   draw(ctx, wordsPerMin) {

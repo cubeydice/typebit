@@ -8,7 +8,7 @@ const audio = document.getElementById("bg-music");
 const gameOverBGMusic = 'assets/bg/churchofsaints.mp3';
 const enemyDestroyAudio = new Audio('assets/music/effects/destroy2.wav');
 const gameOverAudio = new Audio('assets/music/effects/game_over.mp3');
-enemyDestroyAudio.volume = 0.5;
+enemyDestroyAudio.volume = 0.2;
 gameOverAudio.volume = 0.5;
 
 export default class TypeBit {
@@ -45,7 +45,7 @@ export default class TypeBit {
   restart() {
     this.running = false;
     this.score = 0;
-    this.player.health = 100;
+    this.player.health = 50;
     this.enemies = [];
     this.typed = "";
     clearInterval(this.enemyInterval)
@@ -55,7 +55,7 @@ export default class TypeBit {
   }
 
   gameOver() {
-    this.player.outOfHealth()
+    return this.player.outOfHealth()
   }
 
   animate() {
@@ -64,6 +64,16 @@ export default class TypeBit {
     this.bg.draw(this.ctx)
     this.player.draw(this.ctx, this.wordsPerMin)
 
+    /* Game Over Sequence */
+    if (this.running && this.gameOver()){
+      if (!audio.muted) {
+        gameOverAudio.play()
+      }
+      this.gameOverData(this.ctx)
+      audio.src = gameOverBGMusic
+      this.player.idle()
+      this.running = false
+    }
     /*Increase difficulty*/
     if (this.score > 100 && this.score <= 250) {
       this.max_enemies = 6;
@@ -71,6 +81,7 @@ export default class TypeBit {
     } else if (this.score > 250 && this.score <= 400) {
       this.max_enemies = 8;
       this.num_enemies = 3;
+      this.player.run();
     } else if (this.score > 400) {
       this.max_enemies = 10;
       this.num_enemies = 4;
@@ -107,15 +118,6 @@ export default class TypeBit {
       this.status(this.ctx)
     }
 
-    /* Game Over Sequence */
-    if (this.gameOver()) {
-      console.log("Game Over")
-      if (!audio.muted) {
-        gameOverAudio.play()
-      }
-      audio.src = gameOverBGMusic
-      this.running = false;
-    }
 
     requestAnimationFrame(this.animate.bind(this))
   }
@@ -128,6 +130,10 @@ export default class TypeBit {
     ctx.fillText(this.typed, 200, 280)
   }
 
+  gameOverData(ctx) {
+    ctx.font = "120px VT323";
+    ctx.fillText(`final score: ${this.score}`, 200, 100)
+  }
 
   addEnemies() {
     for (let i = 0; i < this.num_enemies; i++){
