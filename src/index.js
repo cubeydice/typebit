@@ -54,7 +54,7 @@ window.mobileCheck = function() {
 };
 
 /*Only show game if not on mobile device*/
-if (window.mobileCheck()) {
+if (!window.mobileCheck()) {
   title.remove();
   start.remove();
   tutorial.remove();
