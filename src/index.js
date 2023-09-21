@@ -2,6 +2,8 @@ import TypeBit from "./scripts/game";
 
 const canvas = document.getElementById('canvas');
 const mobileError = document.getElementById('mobile-error');
+const title = document.getElementById("title");
+const start = document.getElementById("start");
 const retry = document.getElementById("retry");
 const mute = document.getElementById("bg-mute");
 const audio = document.getElementById("bg-music");
@@ -37,6 +39,8 @@ window.mobileCheck = function() {
 
 /*Only show game if not on mobile device*/
 if (window.mobileCheck()) {
+  title.remove();
+  start.remove();
   mobileError.innerText = "sorry, typebit is not compatible with mobile devices 🥺"
 } else {
   // Play Game
@@ -79,10 +83,10 @@ if (window.mobileCheck()) {
 
     if (!audio.muted) {
       audio.muted = true;
-      mute.src = "assets/icons/mute.png";
+      mute.src = "./assets/icons/mute.png";
     } else {
       audio.muted = false;
-      mute.src = "assets/icons/speaker.png";
+      mute.src = "./assets/icons/speaker.png";
     }
   }
 
