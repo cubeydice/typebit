@@ -10,7 +10,7 @@ const audio = document.getElementById("bg-music");
 const invalidKeys = ["Tab","CapsLock", "Alt", "AltGraph", "Fn", "Super",
 "Symbol", "NumLock", "Meta", "Hyper", "Shift", "ArrowRight", "ArrowLeft",
 "ArrowUp", "ArrowDown", "Delete", "Insert", "PageUp", "PageDown"]
-audio.volume = 0.2;
+audio.volume = 0.4;
 let gameStarted = false;
 
 /*Check if user is using mobile device*/
