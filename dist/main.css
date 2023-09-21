@@ -110,7 +110,7 @@ body {
   font-family: "VT323", monospace;
   font-size: 20px;
   position: absolute;
-  top: 42.5%;
+  top: 47%;
   left: 50%;
   margin-right: 50%;
   transform: translate(-50%, -50%);
@@ -118,5 +118,7 @@ body {
 
 #mobile-error {
   width: 300px;
-  font-size: 60px;
+  left: 20%;
+  margin-right: 50%;
+  font-size: 50px;
 }
