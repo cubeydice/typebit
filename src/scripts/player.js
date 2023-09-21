@@ -18,7 +18,7 @@ const CONSTANTS = {
 
 const audio = document.getElementById("bg-music");
 const hurtAudio = new Audio(CONSTANTS.SOUND_HURT);
-hurtAudio.volume = 0.2;
+hurtAudio.volume = 0.1;
 
 export default class Player {
   constructor(dimensions) {

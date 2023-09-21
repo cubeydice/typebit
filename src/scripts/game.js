@@ -12,7 +12,7 @@ const enemyDestroyAudio = new Audio('./assets/music/effects/destroy2.wav');
 const gameOverAudio = new Audio('./assets/music/effects/game_over.mp3');
 const hearts = new Image();
 hearts.src = 'assets/game/UI/hearts.png'
-enemyDestroyAudio.volume = 0.2;
+enemyDestroyAudio.volume = 0.1;
 gameOverAudio.volume = 0.3;
 
 const HEARTS = {
