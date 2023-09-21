@@ -65,8 +65,8 @@ export default class TypeBit {
     this.score = 0;
     this.player.health = 50;
     this.enemies = [];
-    this.num_enemies = 1;
     this.max_enemies = 3;
+    this.num_enemies = 1;
     HEARTS.HEART_1_X = 0;
     HEARTS.HEART_2_X = 0;
     HEARTS.HEART_3_X = 0;
@@ -87,11 +87,11 @@ export default class TypeBit {
 
   changeDifficulty() {
     if (this.score > 50 && this.score <= 100) {
-      this.max_enemies = 5;
-      this.num_enemies = 3;
+      this.max_enemies = 4;
+      this.num_enemies = 2;
     } else if (this.score > 100 && this.score <= 200) {
-      this.max_enemies = 8;
-      this.num_enemies = 4;
+      this.max_enemies = 6;
+      this.num_enemies = 3;
       this.player.run();
       this.bg.changeSpeed(1.5);
       if (!this.diffultyChange) {
@@ -100,7 +100,7 @@ export default class TypeBit {
       }
     } else if (this.score > 200) {
       this.bg.changeSpeed(2);
-      this.max_enemies = 10;
+      this.max_enemies = 8;
       this.num_enemies = 4;
     }
   }
@@ -117,10 +117,11 @@ export default class TypeBit {
       if (!audio.muted) {
         gameOverAudio.play();
       }
+      this.health(this.ctx)
       this.player.dead();
       this.bg.changeSpeed(0);
       title.innerHTML = "GAME OVER";
-      start.innerHTML = `final score: ${this.score}`;
+      start.innerHTML = `final score: ${this.score} <br>[esc] to restart`;
       clearInterval(this.enemyInterval);
       this.running = false;
     }
