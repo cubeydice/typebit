@@ -4,7 +4,6 @@ import Background from "./background";
 
 const title = document.getElementById("title");
 const start = document.getElementById("start");
-const tutorial = document.querySelector(".tutorial")
 const audio = document.getElementById("bg-music");
 const introBGMusic = './assets/music/bg/memory.mp3';
 const fastBGMusic = './assets/music/bg/mountainoftrials.mp3';
@@ -166,12 +165,6 @@ export default class TypeBit {
     }
 
     this.animReq = requestAnimationFrame(this.animate.bind(this))
-  }
-
-  tutorialStuff() {
-    const tutorial1 = tutorial.appendChild(document.createElement("li"))
-    tutorial1.innerHTML = `dangerous slimes appeared on your way home 😳 <br>
-    they seem weak to you repeating what they say, though...`
   }
 
   status(ctx) {
