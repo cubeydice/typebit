@@ -14,7 +14,7 @@ const invalidKeys = ["Tab","CapsLock", "Alt", "AltGraph", "Fn", "Super",
 audio.volume = 0.4;
 let gameStarted = false;
 
-//Mute Audio
+//Event to mute Audio
 const muteAudio = (e) => {
   e.preventDefault();
 
@@ -26,7 +26,6 @@ const muteAudio = (e) => {
     mute.src = "./assets/icons/speaker.png";
   }
 }
-mute.addEventListener("click", muteAudio)
 
 /*Check if user is using mobile device*/
 window.mobileCheck = function() {
@@ -61,8 +60,8 @@ if (window.mobileCheck()) {
   tutorial.remove();
   retry.remove();
   mute.addEventListener("touchstart", muteAudio, false)
+  mobileError.innerText = "sorry, typebit is not compatible with mobile devices 🥺"
 } else {
-  mobileError.remove();
   // Play Game
   const game = new TypeBit(canvas);
   game.run();
@@ -96,5 +95,10 @@ if (window.mobileCheck()) {
     game.restart();
   }
   retry.addEventListener("click", restart)
+
+  // Music
+
+  mute.addEventListener("click", muteAudio)
+
 }
 

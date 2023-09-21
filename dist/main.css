@@ -110,14 +110,13 @@ body {
   font-family: "VT323", monospace;
   font-size: 20px;
   position: absolute;
-  top: 30%;
+  top: 42.5%;
   left: 50%;
   margin-right: 50%;
   transform: translate(-50%, -50%);
 }
 
 #mobile-error {
-  position: absolute;
   width: 300px;
   font-size: 60px;
 }
