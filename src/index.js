@@ -7,7 +7,9 @@ const start = document.getElementById("start");
 const retry = document.getElementById("retry");
 const mute = document.getElementById("bg-mute");
 const audio = document.getElementById("bg-music");
-const invalidKeys = ["Tab","CapsLock", "Alt", "AltGraph", "Fn", "Super", "Symbol", "NumLock", "Meta", "Hyper", "Shift"]
+const invalidKeys = ["Tab","CapsLock", "Alt", "AltGraph", "Fn", "Super",
+"Symbol", "NumLock", "Meta", "Hyper", "Shift", "ArrowRight", "ArrowLeft",
+"ArrowUp", "ArrowDown", "Delete", "Insert", "PageUp", "PageDown"]
 audio.volume = 0.2;
 let gameStarted = false;
 
