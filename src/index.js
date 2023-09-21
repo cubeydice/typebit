@@ -5,13 +5,27 @@ const mobileError = document.getElementById('mobile-error');
 const title = document.getElementById("title");
 const start = document.getElementById("start");
 const retry = document.getElementById("retry");
+const tutorial = document.querySelector(".tutorial")
 const mute = document.getElementById("bg-mute");
 const audio = document.getElementById("bg-music");
 const invalidKeys = ["Tab","CapsLock", "Alt", "AltGraph", "Fn", "Super",
 "Symbol", "NumLock", "Meta", "Hyper", "Shift", "ArrowRight", "ArrowLeft",
 "ArrowUp", "ArrowDown", "Delete", "Insert", "PageUp", "PageDown"]
-audio.volume = 0.2;
+audio.volume = 0.4;
 let gameStarted = false;
+
+//Event to mute Audio
+const muteAudio = (e) => {
+  e.preventDefault();
+
+  if (!audio.muted) {
+    audio.muted = true;
+    mute.src = "./assets/icons/mute.png";
+  } else {
+    audio.muted = false;
+    mute.src = "./assets/icons/speaker.png";
+  }
+}
 
 /*Check if user is using mobile device*/
 window.mobileCheck = function() {
@@ -34,8 +48,8 @@ window.mobileCheck = function() {
       hasTouchScreen =
         /\b(BlackBerry|webOS|iPhone|IEMobile)\b/i.test(UA) ||
         /\b(Android|Windows Phone|iPad|iPod)\b/i.test(UA);
+      }
     }
-  }
   return hasTouchScreen;
 };
 
@@ -43,6 +57,9 @@ window.mobileCheck = function() {
 if (window.mobileCheck()) {
   title.remove();
   start.remove();
+  tutorial.remove();
+  retry.remove();
+  mute.addEventListener("touchstart", muteAudio, false)
   mobileError.innerText = "sorry, typebit is not compatible with mobile devices 🥺"
 } else {
   // Play Game
@@ -55,10 +72,10 @@ if (window.mobileCheck()) {
       game.typed = game.typed.slice(0,-1)
     } else if (invalidKeys.includes(e.key)) {
     } else if (e.key === "Enter") {
-      game.typed += " "
-    } else if (e.key === "Control") {
-      game.typed = ""
+      game.typed += "~"
     } else if (e.key === "Escape") {
+      game.typed = ""
+    } else if (e.key === "Control") {
       game.restart();
     }
     else {
@@ -80,17 +97,6 @@ if (window.mobileCheck()) {
   retry.addEventListener("click", restart)
 
   // Music
-  const muteAudio = (e) => {
-    e.preventDefault();
-
-    if (!audio.muted) {
-      audio.muted = true;
-      mute.src = "./assets/icons/mute.png";
-    } else {
-      audio.muted = false;
-      mute.src = "./assets/icons/speaker.png";
-    }
-  }
 
   mute.addEventListener("click", muteAudio)
 

@@ -117,7 +117,7 @@ body {
 }
 
 #mobile-error {
+  position: absolute;
   width: 300px;
   font-size: 60px;
-  text-align: center;
 }

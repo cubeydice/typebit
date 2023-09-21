@@ -13,7 +13,7 @@ const CONSTANTS = {
   SPRITE_POS_Y: 450
 }
 export default class Enemy {
-  constructor(dimensions, speed, pos) {
+  constructor(dimensions, speed, pos, enemyWords, enemyWordPos) {
     this.dimensions = dimensions;
     this.speed = Math.floor(speed * CONSTANTS.ENEMY_SPEED + CONSTANTS.ENEMY_SPEED);
     this.pos_x = Math.floor(CONSTANTS.SPRITE_POS_X + (100 * pos));
@@ -25,6 +25,24 @@ export default class Enemy {
     this.words_y = CONSTANTS.SPRITE_POS_Y - Math.random() * 150;
     this.score = this.words.length;
     this.destroyed = false;
+    this.checkWord(enemyWords)
+    this.checkWordPosition(enemyWordPos)
+
+  }
+  checkWordPosition(enemyWordPos) {
+    if (enemyWordPos !== undefined) {
+      while (enemyWordPos.includes(this.words_y)) {
+        this.words_y += 10;
+      }
+    }
+  }
+
+  checkWord (enemyWords) {
+    if (enemyWords !== undefined) {
+      while (enemyWords.includes(this.words)) {
+        this.words = WORDS[Math.floor(Math.random() * WORDS.length)];
+      }
+    }
   }
 
   draw(ctx) {
@@ -33,11 +51,12 @@ export default class Enemy {
       ctx.fillStyle = "white";
       ctx.roundRect(this.pos_x - this.words.length - 9, this.words_y - 28, (this.words.length * 10) + 10, 22, [10]);
       ctx.fill();
+      ctx.strokeStyle = "gray";
+      ctx.stroke();
 
       ctx.fillStyle = "black";
       ctx.font = "24px VT323";
       ctx.fillText(this.words, this.pos_x - this.words.length, this.words_y - 10)
-      ctx.clearRect.bind(this, 0, 0, this.dimensions.width, this.dimensions.height)
     }
 
     this.move(ctx)

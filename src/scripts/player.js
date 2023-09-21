@@ -18,7 +18,7 @@ const CONSTANTS = {
 
 const audio = document.getElementById("bg-music");
 const hurtAudio = new Audio(CONSTANTS.SOUND_HURT);
-hurtAudio.volume = 0.2;
+hurtAudio.volume = 0.1;
 
 export default class Player {
   constructor(dimensions) {
@@ -37,10 +37,12 @@ export default class Player {
 
   walk() {
     this.playerImg.src = this.spriteAnim.walk;
+    this.running = false;
   }
 
   run() {
     this.playerImg.src = this.spriteAnim.run;
+    this.running = true;
   }
 
   hurt() {
@@ -61,7 +63,7 @@ export default class Player {
     if (this.outOfHealth() && this.position >= 4){
     } else if (this.hurts && this.position >= 4) {
       this.hurts = false;
-      this.walk();
+      !this.running ? this.walk() : this.run()
     } else {
       this.position = Math.floor(CONSTANTS.GAME_FRAME/CONSTANTS.PLAYER_SPEED) % 5;
       CONSTANTS.SPRITE_FRAME = CONSTANTS.SPRITE_X * this.position;

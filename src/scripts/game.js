@@ -5,15 +5,22 @@ import Background from "./background";
 const title = document.getElementById("title");
 const start = document.getElementById("start");
 const audio = document.getElementById("bg-music");
-const introBGMusic = './assets/music/bg/memory.mp3';
-const fastBGMusic = './assets/music/bg/mountainoftrials.mp3';
-const gameOverBGMusic = './assets/music/bg/churchofsaints.mp3';
-const enemyDestroyAudio = new Audio('./assets/music/effects/destroy2.wav');
-const gameOverAudio = new Audio('./assets/music/effects/game_over.mp3');
 const hearts = new Image();
 hearts.src = 'assets/game/UI/hearts.png'
-enemyDestroyAudio.volume = 0.2;
-gameOverAudio.volume = 0.3;
+
+const MUSIC = {
+  introBGMusic: './assets/music/bg/memory.mp3',
+  medBGMusic: 'assets/music/bg/TemplePath.mp3',
+  fastBGMusic: './assets/music/bg/mountainoftrials.mp3',
+  gameOverBGMusic: './assets/music/bg/churchofsaints.mp3',
+  enemyDestroyAudio: new Audio('./assets/music/effects/destroy2.wav'),
+  gameOverAudio: new Audio('./assets/music/effects/game_over.mp3'),
+  mistakeAudio: new Audio('assets/music/effects/mistake.wav')
+};
+
+MUSIC.enemyDestroyAudio.volume = 0.1;
+MUSIC.gameOverAudio.volume = 0.3;
+MUSIC.mistakeAudio.volume = 1;
 
 const HEARTS = {
   HEART_SIZE: 32,
@@ -26,7 +33,7 @@ const HEARTS = {
   HEARTS_POS_X: 40,
   HEARTS_POS_Y: 27,
   HEART_CANVAS_SIZE: 64
-}
+};
 
 export default class TypeBit {
   constructor(canvas) {
@@ -35,15 +42,23 @@ export default class TypeBit {
       width: canvas.width,
       height: canvas.height
     };
-    this.num_enemies = 1;
-    this.max_enemies = 3;
-    this.enemies = [];
-    this.score = 0;
-    this.typed = "";
     this.bg = new Background(this.ctx);
     this.player = new Player(this.dimensions)
     this.enemy = new Enemy(this.dimensions)
-    this.diffultyChange = false;
+    this.enemiesData = {
+      enemies: [],
+      enemyWords: [],
+      enemyWordPos: []
+    }
+    this.numEnemies = 1;
+    this.maxEnemies = 3;
+    this.score = 0;
+    this.typed = "";
+    this.difficultyChange = false;
+    this.level = {
+      med: false,
+      hard: false
+    }
   }
 
   run() {
@@ -54,31 +69,37 @@ export default class TypeBit {
   play() {
     this.running = true;
     this.typed = "";
-    this.enemyInterval = setInterval(this.addEnemies.bind(this), 1000)
     title.innerHTML = ""
     start.innerHTML = ""
+    this.enemyInterval = setInterval(this.addEnemies.bind(this), 800)
   }
 
   restart() {
     this.running = false;
+
+    //Reset Enemies
+    Object.keys(this.enemiesData).forEach(enemyData => this.enemiesData[enemyData] = [])
+    this.maxEnemies = 4;
+    this.numEnemies = 1;
+    clearInterval(this.enemyInterval);
+
+    //Reset Player Data
     this.typed = "";
     this.score = 0;
     this.player.health = 50;
-    this.enemies = [];
-    this.max_enemies = 3;
-    this.num_enemies = 1;
     HEARTS.HEART_1_X = 0;
     HEARTS.HEART_2_X = 0;
     HEARTS.HEART_3_X = 0;
     HEARTS.HEART_4_X = 0;
     HEARTS.HEART_5_X = 0;
+    this.player.walk();
+
+    //Reset Background and Sound
     this.bg.changeSpeed(1);
-    audio.src = introBGMusic;
-    this.diffultyChange = false;
+    audio.src = MUSIC.introBGMusic;
+    Object.keys(this.level).forEach((lvl) => this.level[lvl] = false);
     title.innerHTML = "typebit"
     start.innerHTML = "press any key to start"
-    clearInterval(this.enemyInterval);
-    this.player.walk();
   }
 
   gameOver() {
@@ -87,22 +108,39 @@ export default class TypeBit {
 
   changeDifficulty() {
     if (this.score > 50 && this.score <= 100) {
-      this.max_enemies = 4;
-      this.num_enemies = 2;
+      this.maxEnemies = 5;
+      this.numEnemies = 2;
     } else if (this.score > 100 && this.score <= 200) {
-      this.max_enemies = 6;
-      this.num_enemies = 3;
-      this.player.run();
-      this.bg.changeSpeed(1.5);
-      if (!this.diffultyChange) {
-        audio.src = fastBGMusic
-        this.diffultyChange = true;
+      this.maxEnemies = 6;
+      this.numEnemies = 3;
+      if (!this.level.med) {
+        audio.src = MUSIC.medBGMusic
+        this.level.med = true;
       }
-    } else if (this.score > 200) {
+    } else if (this.score > 200  && this.score <= 300) {
+      this.maxEnemies = 8;
+      this.numEnemies = 4;
+      this.bg.changeSpeed(1.5);
+      this.player.run();
+      if (!this.level.hard) {
+        audio.src = MUSIC.fastBGMusic;
+        this.level.hard = true;
+      }
+    } else if (this.score > 300  && this.score <= 400) {
+      this.maxEnemies = 10;
+      this.numEnemies = 6;
+    } else if (this.score > 400) {
       this.bg.changeSpeed(2);
-      this.max_enemies = 8;
-      this.num_enemies = 4;
+      this.maxEnemies = 12;
+      this.numEnemies = 8;
     }
+  }
+
+  removeEnemy(enemy) {
+    const enemyIndex = this.enemiesData.enemies.indexOf(enemy)
+    this.enemiesData.enemies.splice(enemyIndex, 1);
+    this.enemiesData.enemyWords.splice(enemyIndex, 1);
+    this.enemiesData.enemyWordPos.splice(enemyIndex, 1);
   }
 
   animate() {
@@ -113,15 +151,15 @@ export default class TypeBit {
 
     /* Game Over Sequence */
     if (this.gameOver() && this.running){
-      audio.src = gameOverBGMusic;
+      audio.src = MUSIC.gameOverBGMusic;
       if (!audio.muted) {
-        gameOverAudio.play();
+        MUSIC.gameOverAudio.play();
       }
       this.health(this.ctx)
       this.player.dead();
       this.bg.changeSpeed(0);
       title.innerHTML = "GAME OVER";
-      start.innerHTML = `final score: ${this.score} <br>[esc] to restart`;
+      start.innerHTML = `final score: ${this.score} <br>[ctrl] to restart`;
       clearInterval(this.enemyInterval);
       this.running = false;
     }
@@ -134,32 +172,52 @@ export default class TypeBit {
       //Health
       this.health(this.ctx)
 
-      //Enemy logic
-      this.enemies.forEach(enemy => {
-        //Destroy enemy is correct words typed
-        if (this.typed === (enemy.words + " ")) {
-          if (!audio.muted) {
-            enemyDestroyAudio.play()
-          }
-          enemy.destroy();
-          this.score += enemy.score;
-          this.typed = "";
-        }
+    /*Input Logic*/
+    if (this.typed.slice(-1) === "~") {
+      this.typedWord = this.typed.slice(0, -1);
 
-        enemy.draw(this.ctx)
+      if (this.enemiesData.enemyWords.includes(this.typedWord)) {
+        if (!audio.muted) {
+          MUSIC.enemyDestroyAudio.play();
+        };
 
-        //Remove enemy if out of bounds
-        if (enemy.bounds().right < 0) {
-          this.enemies.splice(this.enemies.indexOf(enemy), 1);
+        let enemyIdx = this.enemiesData.enemyWords.indexOf(this.typedWord)
+        let enemy = this.enemiesData.enemies[enemyIdx]
+        enemy.destroy();
+        this.score += enemy.score;
+      } else {
+        if (!audio.muted) {
+          MUSIC.mistakeAudio.play();
         }
+      }
+      this.typed = "";
+    }
 
-        //Enemy collision with player when not already destroyed
-        if (this.player.collidesWith(this.player.bounds(), enemy.bounds())
-        && enemy.destroyed === false) {
-          this.player.hurt();
-          this.enemies.splice(this.enemies.indexOf(enemy), 1);
-        }
-      })
+    /*Enemy Logic*/
+    this.enemiesData.enemies.forEach(enemy => {
+      // if (this.typed === (enemy.words + " ")) {
+      //   if (!audio.muted) {
+      //     MUSIC.enemyDestroyAudio.play()
+      //   }
+      //   enemy.destroy();
+      //   this.score += enemy.score;
+      //   this.typed = "";
+      // }
+
+      enemy.draw(this.ctx)
+
+      //Remove enemy if out of bounds
+      if (enemy.bounds().right < 0) {
+        this.removeEnemy(enemy)
+      }
+
+      //Enemy collision with player when not already destroyed
+      if (this.player.collidesWith(this.player.bounds(), enemy.bounds())
+      && enemy.destroyed === false) {
+        this.player.hurt();
+        this.removeEnemy(enemy)
+      }
+    })
 
       //Game data info
       this.status(this.ctx);
@@ -176,13 +234,18 @@ export default class TypeBit {
   }
 
   addEnemies() {
-    for (let i = 0; i < this.num_enemies; i++){
-      if (this.enemies.length < this.max_enemies) {
+    for (let i = 0; i < this.numEnemies; i++){
+      if (this.enemiesData.enemies.length < this.maxEnemies) {
         console.log("Adding enemies...")
         let speed = Math.random()
         let pos = Math.random()
-        this.enemies.push(new Enemy(this.dimensions, speed, pos));
+        const newEnemy = new Enemy(this.dimensions, speed, pos,
+          this.enemiesData.enemyWords, this.enemiesData.enemyWordPos)
+        this.enemiesData.enemies.push(newEnemy);
+        this.enemiesData.enemyWords.push(newEnemy.words)
+        this.enemiesData.enemyWordPos.push(newEnemy.words_y)
       }
+      console.log(this.enemiesData)
     }
   }
 
