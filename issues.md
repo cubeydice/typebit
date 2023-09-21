@@ -1,9 +1,5 @@
 # To-Do
-* add enemy functionality
-* add health and damage functionality
-* add health bar to UI
-* add WPM to UI
-* add tutorial
+* update text bubbles to not overlap
 
 # Issues
 * instead of pulling from API rn, create own library of words based on difficulty?
