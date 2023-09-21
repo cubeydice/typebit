@@ -37,7 +37,6 @@ export default class Enemy {
       ctx.fillStyle = "black";
       ctx.font = "24px VT323";
       ctx.fillText(this.words, this.pos_x - this.words.length, this.words_y - 10)
-      ctx.clearRect.bind(this, 0, 0, this.dimensions.width, this.dimensions.height)
     }
 
     this.move(ctx)
