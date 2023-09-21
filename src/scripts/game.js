@@ -14,11 +14,13 @@ const MUSIC = {
   fastBGMusic: './assets/music/bg/mountainoftrials.mp3',
   gameOverBGMusic: './assets/music/bg/churchofsaints.mp3',
   enemyDestroyAudio: new Audio('./assets/music/effects/destroy2.wav'),
-  gameOverAudio: new Audio('./assets/music/effects/game_over.mp3')
-}
+  gameOverAudio: new Audio('./assets/music/effects/game_over.mp3'),
+  mistakeAudio: new Audio('assets/music/effects/mistake.wav')
+};
 
 MUSIC.enemyDestroyAudio.volume = 0.1;
 MUSIC.gameOverAudio.volume = 0.3;
+MUSIC.mistakeAudio.volume = 1;
 
 const HEARTS = {
   HEART_SIZE: 32,
@@ -31,7 +33,7 @@ const HEARTS = {
   HEARTS_POS_X: 40,
   HEARTS_POS_Y: 27,
   HEART_CANVAS_SIZE: 64
-}
+};
 
 export default class TypeBit {
   constructor(canvas) {
@@ -157,7 +159,7 @@ export default class TypeBit {
       this.player.dead();
       this.bg.changeSpeed(0);
       title.innerHTML = "GAME OVER";
-      start.innerHTML = `final score: ${this.score} <br>[esc] to restart`;
+      start.innerHTML = `final score: ${this.score} <br>[ctrl] to restart`;
       clearInterval(this.enemyInterval);
       this.running = false;
     }
@@ -170,32 +172,52 @@ export default class TypeBit {
       //Health
       this.health(this.ctx)
 
-      //Enemy logic
-      this.enemiesData.enemies.forEach(enemy => {
-        //Destroy enemy is correct words typed
-        if (this.typed === (enemy.words + " ")) {
-          if (!audio.muted) {
-            MUSIC.enemyDestroyAudio.play()
-          }
-          enemy.destroy();
-          this.score += enemy.score;
-          this.typed = "";
-        }
+    /*Input Logic*/
+    if (this.typed.slice(-1) === "*") {
+      this.typedWord = this.typed.slice(0, -1);
 
-        enemy.draw(this.ctx)
+      if (this.enemiesData.enemyWords.includes(this.typedWord)) {
+        if (!audio.muted) {
+          MUSIC.enemyDestroyAudio.play();
+        };
 
-        //Remove enemy if out of bounds
-        if (enemy.bounds().right < 0) {
-          this.removeEnemy(enemy)
+        let enemyIdx = this.enemiesData.enemyWords.indexOf(this.typedWord)
+        let enemy = this.enemiesData.enemies[enemyIdx]
+        enemy.destroy();
+        this.score += enemy.score;
+      } else {
+        if (!audio.muted) {
+          MUSIC.mistakeAudio.play();
         }
+      }
+      this.typed = "";
+    }
 
-        //Enemy collision with player when not already destroyed
-        if (this.player.collidesWith(this.player.bounds(), enemy.bounds())
-        && enemy.destroyed === false) {
-          this.player.hurt();
-          this.removeEnemy(enemy)
-        }
-      })
+    /*Enemy Logic*/
+    this.enemiesData.enemies.forEach(enemy => {
+      // if (this.typed === (enemy.words + " ")) {
+      //   if (!audio.muted) {
+      //     MUSIC.enemyDestroyAudio.play()
+      //   }
+      //   enemy.destroy();
+      //   this.score += enemy.score;
+      //   this.typed = "";
+      // }
+
+      enemy.draw(this.ctx)
+
+      //Remove enemy if out of bounds
+      if (enemy.bounds().right < 0) {
+        this.removeEnemy(enemy)
+      }
+
+      //Enemy collision with player when not already destroyed
+      if (this.player.collidesWith(this.player.bounds(), enemy.bounds())
+      && enemy.destroyed === false) {
+        this.player.hurt();
+        this.removeEnemy(enemy)
+      }
+    })
 
       //Game data info
       this.status(this.ctx);

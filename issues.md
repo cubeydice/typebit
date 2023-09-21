@@ -1,9 +1,5 @@
-# To-Do
-* update text bubbles to not overlap
-
 # Issues
-* instead of pulling from API rn, create own library of words based on difficulty?
-* sprite not cycling correctly
+* text boxes overlap; consider stacking based on y-coords
 
 # Future Updates
 ## Blockades

@@ -72,7 +72,7 @@ if (window.mobileCheck()) {
       game.typed = game.typed.slice(0,-1)
     } else if (invalidKeys.includes(e.key)) {
     } else if (e.key === "Enter") {
-      game.typed += " "
+      game.typed += "*"
     } else if (e.key === "Escape") {
       game.typed = ""
     } else if (e.key === "Control") {
