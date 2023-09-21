@@ -69,7 +69,7 @@ export default class TypeBit {
     this.typed = "";
     title.innerHTML = ""
     start.innerHTML = ""
-    this.enemyInterval = setInterval(this.addEnemies.bind(this), 1000)
+    this.enemyInterval = setInterval(this.addEnemies.bind(this), 800)
   }
 
   restart() {
@@ -77,8 +77,7 @@ export default class TypeBit {
 
     //Reset Enemies
     Object.keys(this.enemiesData).forEach(enemyData => this.enemiesData[enemyData] = [])
-    console.log(this.enemiesData)
-    this.maxEnemies = 3;
+    this.maxEnemies = 4;
     this.numEnemies = 1;
     clearInterval(this.enemyInterval);
 
@@ -92,13 +91,11 @@ export default class TypeBit {
     HEARTS.HEART_4_X = 0;
     HEARTS.HEART_5_X = 0;
     this.player.walk();
-    console.log(HEARTS)
 
     //Reset Background and Sound
     this.bg.changeSpeed(1);
     audio.src = MUSIC.introBGMusic;
     Object.keys(this.level).forEach((lvl) => this.level[lvl] = false);
-    console.log(this.level)
     title.innerHTML = "typebit"
     start.innerHTML = "press any key to start"
   }
@@ -109,12 +106,11 @@ export default class TypeBit {
 
   changeDifficulty() {
     if (this.score > 50 && this.score <= 100) {
-      this.maxEnemies = 4;
+      this.maxEnemies = 5;
       this.numEnemies = 2;
     } else if (this.score > 100 && this.score <= 200) {
       this.maxEnemies = 6;
       this.numEnemies = 3;
-      this.bg.changeSpeed(1.25);
       if (!this.level.med) {
         audio.src = MUSIC.medBGMusic
         this.level.med = true;
@@ -129,7 +125,6 @@ export default class TypeBit {
         this.level.hard = true;
       }
     } else if (this.score > 300  && this.score <= 400) {
-      this.bg.changeSpeed(1.75);
       this.maxEnemies = 10;
       this.numEnemies = 6;
     } else if (this.score > 400) {
@@ -143,6 +138,7 @@ export default class TypeBit {
     const enemyIndex = this.enemiesData.enemies.indexOf(enemy)
     this.enemiesData.enemies.splice(enemyIndex, 1);
     this.enemiesData.enemyWords.splice(enemyIndex, 1);
+    this.enemiesData.enemyWordPos.splice(enemyIndex, 1);
   }
 
   animate() {
@@ -221,11 +217,13 @@ export default class TypeBit {
         console.log("Adding enemies...")
         let speed = Math.random()
         let pos = Math.random()
-        const newEnemy = new Enemy(this.dimensions, speed, pos)
+        const newEnemy = new Enemy(this.dimensions, speed, pos,
+          this.enemiesData.enemyWords, this.enemiesData.enemyWordPos)
         this.enemiesData.enemies.push(newEnemy);
         this.enemiesData.enemyWords.push(newEnemy.words)
         this.enemiesData.enemyWordPos.push(newEnemy.words_y)
       }
+      console.log(this.enemiesData)
     }
   }
 

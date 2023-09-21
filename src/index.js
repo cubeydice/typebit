@@ -73,9 +73,9 @@ if (window.mobileCheck()) {
     } else if (invalidKeys.includes(e.key)) {
     } else if (e.key === "Enter") {
       game.typed += " "
-    } else if (e.key === "Control") {
-      game.typed = ""
     } else if (e.key === "Escape") {
+      game.typed = ""
+    } else if (e.key === "Control") {
       game.restart();
     }
     else {
