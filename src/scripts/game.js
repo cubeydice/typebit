@@ -172,7 +172,55 @@ export default class TypeBit {
       //Health
       this.health(this.ctx)
 
-    /*Input Logic*/
+      /*Input Logic*/
+      this.wordSubmit();
+
+      /*Enemy Logic*/
+      this.enemiesData.enemies.forEach(enemy => {
+        enemy.draw(this.ctx)
+
+        //Remove enemy if out of bounds
+        if (enemy.bounds().right < 0) {
+          this.removeEnemy(enemy)
+        }
+
+        //Enemy collision with player when not already destroyed
+        if (this.player.collidesWith(this.player.bounds(), enemy.bounds())
+        && enemy.destroyed === false) {
+          this.player.hurt();
+          this.removeEnemy(enemy)
+        }
+      })
+
+        //Game data info
+        this.status(this.ctx);
+    }
+
+    this.animReq = requestAnimationFrame(this.animate.bind(this))
+  }
+
+  status(ctx) {
+    ctx.font = "40px VT323";
+    ctx.fillText(`score: ${this.score}`, 960, 70)
+    ctx.font = "64px VT323";
+    ctx.fillText(this.typed, 200, 280)
+  }
+
+  addEnemies() {
+    for (let i = 0; i < this.numEnemies; i++){
+      if (this.enemiesData.enemies.length < this.maxEnemies) {
+        let speed = Math.random()
+        let pos = Math.random()
+        const newEnemy = new Enemy(this.dimensions, speed, pos,
+          this.enemiesData.enemyWords, this.enemiesData.enemyWordPos)
+        this.enemiesData.enemies.push(newEnemy);
+        this.enemiesData.enemyWords.push(newEnemy.words)
+        this.enemiesData.enemyWordPos.push(newEnemy.words_y)
+      }
+    }
+  }
+
+  wordSubmit() {
     if (this.typed.slice(-1) === "~") {
       this.typedWord = this.typed.slice(0, -1);
 
@@ -191,61 +239,6 @@ export default class TypeBit {
         }
       }
       this.typed = "";
-    }
-
-    /*Enemy Logic*/
-    this.enemiesData.enemies.forEach(enemy => {
-      // if (this.typed === (enemy.words + " ")) {
-      //   if (!audio.muted) {
-      //     MUSIC.enemyDestroyAudio.play()
-      //   }
-      //   enemy.destroy();
-      //   this.score += enemy.score;
-      //   this.typed = "";
-      // }
-
-      enemy.draw(this.ctx)
-
-      //Remove enemy if out of bounds
-      if (enemy.bounds().right < 0) {
-        this.removeEnemy(enemy)
-      }
-
-      //Enemy collision with player when not already destroyed
-      if (this.player.collidesWith(this.player.bounds(), enemy.bounds())
-      && enemy.destroyed === false) {
-        this.player.hurt();
-        this.removeEnemy(enemy)
-      }
-    })
-
-      //Game data info
-      this.status(this.ctx);
-    }
-
-    this.animReq = requestAnimationFrame(this.animate.bind(this))
-  }
-
-  status(ctx) {
-    ctx.font = "40px VT323";
-    ctx.fillText(`score: ${this.score}`, 960, 70)
-    ctx.font = "64px VT323";
-    ctx.fillText(this.typed, 200, 280)
-  }
-
-  addEnemies() {
-    for (let i = 0; i < this.numEnemies; i++){
-      if (this.enemiesData.enemies.length < this.maxEnemies) {
-        console.log("Adding enemies...")
-        let speed = Math.random()
-        let pos = Math.random()
-        const newEnemy = new Enemy(this.dimensions, speed, pos,
-          this.enemiesData.enemyWords, this.enemiesData.enemyWordPos)
-        this.enemiesData.enemies.push(newEnemy);
-        this.enemiesData.enemyWords.push(newEnemy.words)
-        this.enemiesData.enemyWordPos.push(newEnemy.words_y)
-      }
-      console.log(this.enemiesData)
     }
   }
 
