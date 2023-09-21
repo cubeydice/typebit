@@ -22,7 +22,7 @@ export default class Enemy {
     this.enemyImg = new Image();
     this.enemyImg.src = 'assets/game/enemy/slime.png';
     this.words = WORDS[Math.floor(Math.random() * WORDS.length)];
-    this.words_y = CONSTANTS.SPRITE_POS_Y - Math.random() * 100;
+    this.words_y = CONSTANTS.SPRITE_POS_Y - Math.random() * 150;
     this.score = this.words.length;
     this.destroyed = false;
   }
