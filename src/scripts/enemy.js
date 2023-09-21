@@ -8,9 +8,9 @@ const CONSTANTS = {
   GAME_FRAME: 0,
   SPRITE_FRAME: 0,
   SPRITE_X: 32,
-  SPRITE_Y: 28,
+  SPRITE_Y: 25,
   SPRITE_POS_X: 1152,
-  SPRITE_POS_Y: 450
+  SPRITE_POS_Y: 445
 }
 export default class Enemy {
   constructor(dimensions, speed, pos, enemyWords, enemyWordPos) {
@@ -67,7 +67,6 @@ export default class Enemy {
     } else {
       this.position = Math.floor(CONSTANTS.GAME_FRAME/this.stagger_frame) % 7;
       CONSTANTS.SPRITE_FRAME = CONSTANTS.SPRITE_X * this.position;
-
       ctx.drawImage(this.enemyImg, CONSTANTS.SPRITE_FRAME, this.pos_y,
         CONSTANTS.SPRITE_X, CONSTANTS.SPRITE_Y,
         this.pos_x, CONSTANTS.SPRITE_POS_Y,
@@ -78,7 +77,8 @@ export default class Enemy {
   }
 
   destroy() {
-    this.pos_y = CONSTANTS.SPRITE_Y * 2 + 2;
+    this.pos_y = CONSTANTS.SPRITE_Y * 2;
+    CONSTANTS.GAME_FRAME = 1;
     this.destroyed = true;
   }
 
