@@ -51,7 +51,7 @@ export default class Player {
     }
     this.playerImg.src = this.spriteAnim.hurt;
     this.health -= 10;
-    this.position = 0;
+    CONSTANTS.GAME_FRAME = 1;
     this.hurts = true;
   }
 
@@ -60,8 +60,8 @@ export default class Player {
   }
 
   draw(ctx) {
-    if (this.outOfHealth() && this.position >= 4){
-    } else if (this.hurts && this.position >= 4) {
+    if (this.outOfHealth() && this.position >= 5){
+    } else if (this.hurts && this.position >= 5) {
       this.hurts = false;
       !this.running ? this.walk() : this.run()
     } else {
