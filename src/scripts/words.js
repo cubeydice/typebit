@@ -4,6 +4,7 @@ export const WORDS = [
     "Paulo is the best",
     "I like sushi",
     "destroy me",
+    "don't kill me",
     "let me live T_T",
     "yum lunch",
     "let it rip",
@@ -74,6 +75,9 @@ export const WORDS = [
     "ball is life",
     "octopus",
     "puff puff",
-    "my back hurts"
+    "my back hurts",
+    "booty booty booty everywhere",
+    "bewbs",
+    "reincarnted as a"
 ]
 

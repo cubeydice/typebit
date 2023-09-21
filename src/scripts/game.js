@@ -173,7 +173,7 @@ export default class TypeBit {
       this.health(this.ctx)
 
     /*Input Logic*/
-    if (this.typed.slice(-1) === "*") {
+    if (this.typed.slice(-1) === "~") {
       this.typedWord = this.typed.slice(0, -1);
 
       if (this.enemiesData.enemyWords.includes(this.typedWord)) {
