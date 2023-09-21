@@ -60,8 +60,8 @@ export default class Player {
   }
 
   draw(ctx) {
-    if (this.outOfHealth() && this.position >= 5){
-    } else if (this.hurts && this.position >= 5) {
+    if (this.outOfHealth() && this.position >= 4){
+    } else if (this.hurts && this.position >= 4) {
       this.hurts = false;
       !this.running ? this.walk() : this.run()
     } else {
