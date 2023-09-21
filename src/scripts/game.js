@@ -20,7 +20,7 @@ const MUSIC = {
 
 MUSIC.enemyDestroyAudio.volume = 0.1;
 MUSIC.gameOverAudio.volume = 0.3;
-MUSIC.mistakeAudio.volume = 1;
+MUSIC.mistakeAudio.volume = 0.2;
 
 const HEARTS = {
   HEART_SIZE: 32,

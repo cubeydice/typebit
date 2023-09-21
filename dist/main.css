@@ -74,7 +74,7 @@ img {
   height: 50px;
 }
 
-li:hover {
+.nav li:hover, .menu li:hover {
   opacity: 0.5;
 }
 
@@ -119,6 +119,6 @@ body {
 #mobile-error {
   width: 300px;
   left: 20%;
-  margin-right: 50%;
-  font-size: 50px;
+  margin-right: 20%;
+  font-size: 40px;
 }

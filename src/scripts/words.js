@@ -76,8 +76,10 @@ export const WORDS = [
     "octopus",
     "puff puff",
     "my back hurts",
-    "booty booty booty everywhere",
+    "booty everywhere",
     "bewbs",
-    "reincarnted as a"
+    "reincarnated as a",
+    "what in the isekai",
+    "a bus hit me"
 ]
 
