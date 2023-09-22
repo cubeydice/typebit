@@ -80,6 +80,11 @@ export const WORDS = [
     "bewbs",
     "reincarnated as a",
     "what in the isekai",
-    "a bus hit me"
+    "a bus hit me",
+    "hark the herald",
+    "slime armageddon",
+    "my slime academia",
+    "slimer moon",
+    "Slimeball Z"
 ]
 
