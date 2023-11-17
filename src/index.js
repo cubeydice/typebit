@@ -60,7 +60,7 @@ if (window.mobileCheck()) {
   tutorial.remove();
   retry.remove();
   mute.addEventListener("touchstart", muteAudio, false)
-  mobileError.innerText = "sorry, typebit is not compatible with mobile devices 🥺"
+  mobileError.innerText = "sorry, typebit is not compatible with mobile devices 🥺 if you get this error on desktop,try disconnecting touch devices and restart"
 } else {
   // Play Game
   const game = new TypeBit(canvas);
