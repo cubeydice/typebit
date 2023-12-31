@@ -1,3 +1,4 @@
+![typebit](docs/typebit)
 # Background
 typebit is a typing game in a charming pixelated style made with sweet Vanilla JavaScript. Accurate typing on a keyboard allows your little animal to proceed through a 2D environment and blast your way through enemies.
 
