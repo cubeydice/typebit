@@ -11,7 +11,6 @@ const audio = document.getElementById("bg-music");
 const invalidKeys = ["Tab","CapsLock", "Alt", "AltGraph", "Fn", "Super",
 "Symbol", "NumLock", "Meta", "Hyper", "Shift", "ArrowRight", "ArrowLeft",
 "ArrowUp", "ArrowDown", "Delete", "Insert", "PageUp", "PageDown"]
-audio.volume = 0.4;
 let gameStarted = false;
 
 //Event to mute Audio

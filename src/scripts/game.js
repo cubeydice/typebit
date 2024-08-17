@@ -65,6 +65,7 @@ export default class TypeBit {
 
   run() {
     this.running = false;
+    MUSIC.introBGMusic.play();
     this.animate(0);
   }
 
