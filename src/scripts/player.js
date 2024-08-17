@@ -1,6 +1,6 @@
 const CONSTANTS = {
   PLAYER_HEALTH: 50,
-  PLAYER_SPEED: 9, //higher num === slower; stagger frame speed
+  PLAYER_SPEED: 5.5, //higher num === slower; stagger frame speed
   PLAYER_WIDTH: 64, //size of player on canvas
   PLAYER_HEIGHT: 64, //size of player on canvas
   SPRITE_WALK: 'assets/game/player/walk.png',
@@ -21,7 +21,7 @@ const hurtAudio = new Audio(CONSTANTS.SOUND_HURT);
 hurtAudio.volume = 0.1;
 
 export default class Player {
-  constructor(dimensions) {
+  constructor(dimensions, fps) {
     this.dimensions = dimensions;
     this.health = CONSTANTS.PLAYER_HEALTH;
     this.spriteAnim = {
@@ -33,6 +33,8 @@ export default class Player {
     }
     this.playerImg = new Image();
     this.playerImg.src = CONSTANTS.SPRITE_WALK;
+    this.fps = fps;
+    this.frameTimer = 0;
   }
 
   walk() {
@@ -59,23 +61,26 @@ export default class Player {
     this.playerImg.src = this.spriteAnim.dead;
   }
 
-  draw(ctx) {
+  draw(ctx, deltaTime) {
     if (this.outOfHealth() && this.position >= 4){
     } else if (this.hurts && this.position >= 4) {
       this.hurts = false;
       !this.running ? this.walk() : this.run()
     } else {
-      this.position = Math.floor(CONSTANTS.GAME_FRAME/CONSTANTS.PLAYER_SPEED) % 5;
-      CONSTANTS.SPRITE_FRAME = CONSTANTS.SPRITE_X * this.position;
-
+      if (this.frameTimer > this.fps) {
+        this.position = Math.floor(CONSTANTS.GAME_FRAME/CONSTANTS.PLAYER_SPEED) % 5;
+        CONSTANTS.SPRITE_FRAME = CONSTANTS.SPRITE_X * this.position;
+        CONSTANTS.GAME_FRAME++;
+        this.frameTimer = 0;
+      } else {
+        this.frameTimer += deltaTime;
+      }
     }
     ctx.drawImage(this.playerImg, //image file
       CONSTANTS.SPRITE_FRAME, 0, //position on sprite frame file
       CONSTANTS.SPRITE_X, CONSTANTS.SPRITE_Y, //size of position on sprite frame file
       CONSTANTS.SPRITE_POS_X, CONSTANTS.SPRITE_POS_Y, //position on canvas
       CONSTANTS.PLAYER_WIDTH, CONSTANTS.PLAYER_HEIGHT) //size of sprite on canvas
-
-    CONSTANTS.GAME_FRAME++;
   }
 
   outOfHealth() {

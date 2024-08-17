@@ -6,7 +6,7 @@ const CONSTANTS = {
   HEIGHT: 576,
 }
 export default class Background {
-  constructor(ctx) {
+  constructor(ctx, fps) {
     // this.createImage = this.createImage.bind(this)
     this.ctx = ctx;
     this.bg = ['assets/game/background/nature_2/1.png',
@@ -14,12 +14,13 @@ export default class Background {
           'assets/game/background/nature_5/3.png',
           'assets/game/background/nature_5/4.png'];
     this.layers = [];
+    this.fps = fps;
 
     let i = 0
     this.bg.forEach(img => {
       const image = new Image();
       image.src = img;
-      this.layers.push(new Layer(image, this.ctx, CONSTANTS.SPEED_MODS[i], CONSTANTS.GAME_SPEED));
+      this.layers.push(new Layer(image, this.ctx, CONSTANTS.SPEED_MODS[i], CONSTANTS.GAME_SPEED, this.fps));
       i++;
     })
   }
@@ -30,17 +31,15 @@ export default class Background {
     })
   }
 
-  draw(ctx) {
+  draw(ctx, deltaTime) {
     this.layers.forEach((layer) => {
-      layer.update();
+      layer.update(deltaTime);
       layer.draw();
     })
-
-    CONSTANTS.GAME_FRAME--
   }
 }
 class Layer {
-  constructor(img, ctx, speedMod, speed) {
+  constructor(img, ctx, speedMod, speed, fps) {
     this.x = 0;
     this.y = 0;
     this.ctx = ctx;
@@ -50,11 +49,19 @@ class Layer {
     this.speedMod = speedMod;
     this.speed = speed * this.speedMod
     this.draw = this.draw.bind(this)
+    this.frameTimer = 0;
+    this.fps = fps;
   }
 
-  update() {
+  update(deltaTime) {
     // this.speed = CONSTANTS.GAME_SPEED * this.speedMod
-    this.x = CONSTANTS.GAME_FRAME * this.speed % (this.width);
+    if (this.frameTimer > this.fps) {
+      this.x = CONSTANTS.GAME_FRAME * this.speed % (this.width);
+      this.frameTimer = 0;
+      CONSTANTS.GAME_FRAME--
+    } else {
+      this.frameTimer += deltaTime;
+    }
   }
 
   changeSpeed(speed) {

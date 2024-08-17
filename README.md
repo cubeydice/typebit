@@ -27,7 +27,7 @@ In addition, this project will include:
 This project will be implemented with the following technologies:
 * `Canvas API` to render the game environment
 * A dictionary API to provide words for the player to type
-* `Webpack` and `Babel` to bundle and transpile the source JavaScritp code
+* `Webpack` and `Babel` to bundle and transpile the source JavaScript code
 * `npm` to manage the project dependencies
 
 # Implementation Timeline
