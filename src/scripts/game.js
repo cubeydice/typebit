@@ -35,6 +35,8 @@ const HEARTS = {
   HEART_CANVAS_SIZE: 64
 };
 
+const FPS = 1000/500;
+
 export default class TypeBit {
   constructor(canvas) {
     this.ctx = canvas.getContext("2d");
@@ -42,9 +44,9 @@ export default class TypeBit {
       width: canvas.width,
       height: canvas.height
     };
-    this.bg = new Background(this.ctx);
-    this.player = new Player(this.dimensions)
-    this.enemy = new Enemy(this.dimensions)
+    this.bg = new Background(this.ctx, FPS);
+    this.player = new Player(this.dimensions, FPS)
+    this.enemy = new Enemy(this.dimensions, FPS)
     this.enemiesData = {
       enemies: [],
       enemyWords: [],
@@ -63,7 +65,7 @@ export default class TypeBit {
 
   run() {
     this.running = false;
-    this.animate();
+    this.animate(0);
   }
 
   play() {
@@ -107,19 +109,19 @@ export default class TypeBit {
   }
 
   changeDifficulty() {
-    if (this.score > 50 && this.score <= 100) {
-      this.maxEnemies = 5;
-      this.numEnemies = 2;
-    } else if (this.score > 100 && this.score <= 200) {
+    if (this.score > 50 && this.score <= 75) {
       this.maxEnemies = 6;
       this.numEnemies = 3;
+    } else if (this.score > 75 && this.score <= 200) {
+      this.maxEnemies = 7;
+      this.numEnemies = 4;
       if (!this.level.med) {
         audio.src = MUSIC.medBGMusic
         this.level.med = true;
       }
     } else if (this.score > 200  && this.score <= 300) {
       this.maxEnemies = 8;
-      this.numEnemies = 4;
+      this.numEnemies = 5;
       this.bg.changeSpeed(1.5);
       this.player.run();
       if (!this.level.hard) {
@@ -128,7 +130,7 @@ export default class TypeBit {
       }
     } else if (this.score > 300  && this.score <= 400) {
       this.maxEnemies = 10;
-      this.numEnemies = 6;
+      this.numEnemies = 5;
     } else if (this.score > 400) {
       this.bg.changeSpeed(2);
       this.maxEnemies = 12;
@@ -143,11 +145,13 @@ export default class TypeBit {
     this.enemiesData.enemyWordPos.splice(enemyIndex, 1);
   }
 
-  animate() {
+  animate(timeStamp, lastTime = 0) {
+    const deltaTime = (timeStamp - lastTime)/1600;
+    lastTime = timeStamp;
     /*Animate background and player*/
     this.ctx.clearRect.bind(this, 0, 0, this.dimensions.width, this.dimensions.height);
-    this.bg.draw(this.ctx);
-    this.player.draw(this.ctx);
+    this.bg.draw(this.ctx, deltaTime);
+    this.player.draw(this.ctx, deltaTime);
 
     /* Game Over Sequence */
     if (this.gameOver() && this.running){
@@ -177,7 +181,7 @@ export default class TypeBit {
 
       /*Enemy Logic*/
       this.enemiesData.enemies.forEach(enemy => {
-        enemy.draw(this.ctx)
+        enemy.draw(this.ctx, deltaTime)
 
         //Remove enemy if out of bounds
         if (enemy.bounds().right < 0) {
@@ -212,7 +216,7 @@ export default class TypeBit {
         let speed = Math.random()
         let pos = Math.random()
         const newEnemy = new Enemy(this.dimensions, speed, pos,
-          this.enemiesData.enemyWords, this.enemiesData.enemyWordPos)
+          this.enemiesData.enemyWords, this.enemiesData.enemyWordPos, FPS)
         this.enemiesData.enemies.push(newEnemy);
         this.enemiesData.enemyWords.push(newEnemy.words)
         this.enemiesData.enemyWordPos.push(newEnemy.words_y)
