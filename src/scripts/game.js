@@ -111,7 +111,7 @@ export default class TypeBit {
 
   changeDifficulty() {
     if (this.score > 50 && this.score <= 75) {
-      this.maxEnemies = 6;
+      this.maxEnemies = 5;
       this.numEnemies = 3;
     } else if (this.score > 75 && this.score <= 200) {
       this.maxEnemies = 7;
