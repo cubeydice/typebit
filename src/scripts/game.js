@@ -110,18 +110,21 @@ export default class TypeBit {
   }
 
   changeDifficulty() {
-    if (this.score > 50 && this.score <= 75) {
+    if (this.score > 50) {
+      this.maxEnemies = 4;
+      this.numEnemies = 2;
+    } else if (this.score >= 50 && this.score <= 125) {
       this.maxEnemies = 5;
       this.numEnemies = 3;
-    } else if (this.score > 75 && this.score <= 200) {
-      this.maxEnemies = 7;
+    } if (this.score > 125 && this.score <= 250) {
+      this.maxEnemies = 6;
       this.numEnemies = 4;
       if (!this.level.med) {
         audio.src = MUSIC.medBGMusic
         this.level.med = true;
       }
-    } else if (this.score > 200  && this.score <= 300) {
-      this.maxEnemies = 8;
+    } else if (this.score > 250  && this.score <= 350) {
+      this.maxEnemies = 7;
       this.numEnemies = 5;
       this.bg.changeSpeed(1.5);
       this.player.run();
@@ -130,12 +133,12 @@ export default class TypeBit {
         this.level.hard = true;
       }
     } else if (this.score > 300 && this.score <= 400) {
-      this.maxEnemies = 10;
+      this.maxEnemies = 8;
       this.numEnemies = 5;
     } else if (this.score > 400) {
       this.bg.changeSpeed(2);
-      this.maxEnemies = 12;
-      this.numEnemies = 8;
+      this.maxEnemies = 10;
+      this.numEnemies = 6;
     }
   }
 
