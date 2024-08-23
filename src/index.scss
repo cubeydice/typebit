@@ -4,16 +4,33 @@ body {
     background: white;
     font-family: 'VT323', monospace;
     font-size: 1.25rem;
+    user-select: none;
+}
+
+#game-container {
     position: absolute;
     top: 47%;
     left: 50%;
     margin-right: 50%;
     transform: translate(-50%, -50%);
-    user-select: none;
 }
 
 #mobile-error {
-    width: 28.75rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    max-width: 80vw;
     margin: auto;
+    height: 90vh;
     font-size: 2.5rem;
+    white-space: pre-line;
+    padding:2rem;
+}
+
+#mobile-error > div {
+    display: flex;
+    justify-content: center;
+    gap: 4rem;
+    margin: 2rem;
 }

@@ -2,10 +2,8 @@ import TypeBit from "./scripts/game";
 
 const canvas = document.getElementById('canvas');
 const mobileError = document.getElementById('mobile-error');
-const title = document.getElementById("title");
-const start = document.getElementById("start");
+const gameContainer = document.getElementById("game-container");
 const retry = document.getElementById("retry");
-const tutorial = document.querySelector(".tutorial")
 const mute = document.getElementById("bg-mute");
 const audio = document.getElementById("bg-music");
 const invalidKeys = ["Tab","CapsLock", "Alt", "AltGraph", "Fn", "Super",
@@ -54,12 +52,23 @@ window.mobileCheck = function() {
 
 /*Only show game if not on mobile device*/
 if (window.mobileCheck()) {
-  title.remove();
-  start.remove();
-  tutorial.remove();
-  retry.remove();
-  mute.addEventListener("touchstart", muteAudio, false)
-  mobileError.innerText = "sorry, typebit is not compatible with mobile devices 🥺 if you get this error on desktop,try disconnecting touch devices and restart"
+  gameContainer.remove();
+  mobileError.textContent = "sorry, typebit is not compatible with mobile devices 🥺 \r\n\r\n if you get this error on desktop, try disconnecting touch devices and restart"
+
+  //Add social media icons to mobile view
+  const gitHubIcon = new Image();
+  const linkedInIcon = new Image();
+  gitHubIcon.src = '../assets/nav/github.png';
+  linkedInIcon.src = '../assets/nav/linkedIn.png';
+  gitHubIcon.onclick = function() {
+    window.location.href = 'https://github.com/cubeydice/typebit';
+  };
+  linkedInIcon.onclick = function() {
+    window.location.href = 'hhttps://www.linkedin.com/in/queen-belle-d-118b7859/';
+  };
+  const iconDiv = document.createElement('div');
+  mobileError.appendChild(iconDiv).appendChild(linkedInIcon);
+  mobileError.appendChild(iconDiv).appendChild(gitHubIcon);
 } else {
   // Play Game
   const game = new TypeBit(canvas);
