@@ -76,22 +76,20 @@ if (window.mobileCheck()) {
 
   window.addEventListener('keydown', function (e) {
     //logic for key press input
-    if (e.key === "Backspace") {
-      game.typed = game.typed.slice(0,-1)
-    } else if (gameStarted && invalidKeys.includes(e.key)) {
-    } else if (e.key === "Enter") {
-      game.typed += "~"
-    } else if (e.key === "Escape") {
-      game.typed = ""
-    } else if (e.key === "Control") {
-      game.restart();
-    }
-    else {
-      game.typed += e.key;
-    }
-
-    //play game  with key press
-    if (game.typed !== "" && !game.running) {
+    if (gameStarted) {
+      if (invalidKeys.includes(e.key)) {
+      } else if (e.key === "Backspace") {
+        game.typed = game.typed.slice(0,-1);
+      } else if (e.key === "Escape") {
+        game.typed = "";
+      } else if (e.key === "Enter") {
+        game.typed += "~";
+      } else if (e.key === "Control") {
+        game.restart();
+      } else {
+        game.typed += e.key;
+      }
+    } else {
       game.play();
       gameStarted = true;
     }
@@ -100,6 +98,7 @@ if (window.mobileCheck()) {
   //Restart Game
   const restart = (e) => {
     e.preventDefault();
+    gameStarted = false;
     game.restart();
   }
   retry.addEventListener("click", restart)

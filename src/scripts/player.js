@@ -48,16 +48,17 @@ export default class Player {
   }
 
   hurt() {
+    CONSTANTS.GAME_FRAME = 1;
     if (!audio.muted) {
       hurtAudio.play()
     }
     this.playerImg.src = this.spriteAnim.hurt;
     this.health -= 10;
-    CONSTANTS.GAME_FRAME = 1;
     this.hurts = true;
   }
 
   dead() {
+    CONSTANTS.GAME_FRAME = 0;
     this.playerImg.src = this.spriteAnim.dead;
   }
 
