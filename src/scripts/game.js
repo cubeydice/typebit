@@ -65,7 +65,7 @@ export default class TypeBit {
 
   run() {
     this.running = false;
-    MUSIC.introBGMusic.play();
+    audio.src = MUSIC.introBGMusic;
     this.animate(0);
   }
 
@@ -129,7 +129,7 @@ export default class TypeBit {
         audio.src = MUSIC.fastBGMusic;
         this.level.hard = true;
       }
-    } else if (this.score > 300  && this.score <= 400) {
+    } else if (this.score > 300 && this.score <= 400) {
       this.maxEnemies = 10;
       this.numEnemies = 5;
     } else if (this.score > 400) {

@@ -99,6 +99,4 @@ export default class Enemy {
       bottom: CONSTANTS.SPRITE_POS_Y + CONSTANTS.ENEMY_HEIGHT
     }
   }
-
-
 }
