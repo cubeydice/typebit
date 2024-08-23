@@ -2,9 +2,7 @@
 # Background
 typebit is a typing game in a charming pixelated style made with sweet Vanilla JavaScript. Accurate typing on a keyboard allows your little animal to proceed through a 2D environment and blast your way through enemies.
 
-Enemies have words above their heads. Typing those words gets rid of the enemies in your way! Typing inaccuracies or failing to get rid of an enemy before it reaches you will decrease your health. You you may encounter road blocks that require a minimum typing speed to get through them.
-
-Completing each level of the game will display player stats.
+Enemies have words above their heads. Typing those words gets rid of the enemies in your way! Typing inaccuracies or failing to get rid of an enemy before it reaches you will decrease your health.
 
 # Functionality & MVPs
 In typebit, users will be able to:
