@@ -1,7 +1,7 @@
 nav {
     display: flex;
     justify-content: space-between;
-    max-width: 1152px;
+    max-width: 72rem;
 }
 
 ul {
@@ -10,11 +10,11 @@ ul {
 }
 
 li {
-    margin: 10px;
+    margin: 0.625rem;
 }
 
 img {
-    height: 50px;
+    height: 3.125rem;
 }
 
 .nav li:hover, .menu li:hover {
@@ -22,21 +22,21 @@ img {
 }
 
 h1 {
-    font-size: 200px;
+    font-size: 12.5rem;
     color: white;
-    -webkit-text-stroke-width: 3px;
+    -webkit-text-stroke-width: 0.188rem;
     -webkit-text-stroke-color: black;
     position: absolute;
     top: 25%;
     left: 25%;
-    height: -100px;
+    height: -6.25rem;
 }
 
 h2 {
     position: absolute;
     font-size: 60px;
     color: white;
-    -webkit-text-stroke-width: 2px;
+    -webkit-text-stroke-width: 0.125rem;
     -webkit-text-stroke-color: black;
     top: 55%;
     left: 26.5%;
