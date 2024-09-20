@@ -153,7 +153,7 @@ export default class TypeBit {
   }
 
   animate(timeStamp, lastTime = 0) {
-    const deltaTime = (timeStamp - lastTime)/9000;
+    const deltaTime = (timeStamp - lastTime)/1600;
     lastTime = timeStamp;
     /*Animate background and player*/
     this.ctx.clearRect.bind(this, 0, 0, this.dimensions.width, this.dimensions.height);
