@@ -84,6 +84,7 @@ export default class TypeBit {
     Object.keys(this.enemiesData).forEach(enemyData => this.enemiesData[enemyData] = [])
     this.maxEnemies = 4;
     this.numEnemies = 1;
+    this.enemy.frameTimer = 0;
     clearInterval(this.enemyInterval);
 
     //Reset Player Data
@@ -95,10 +96,12 @@ export default class TypeBit {
     HEARTS.HEART_3_X = 0;
     HEARTS.HEART_4_X = 0;
     HEARTS.HEART_5_X = 0;
+    this.player.frameTimer = 0;
     this.player.walk();
 
     //Reset Background and Sound
-    this.bg.changeSpeed(1);
+    this.bg.changeSpeed(0.5);
+    this.bg.frameTimer = 0;
     audio.src = MUSIC.introBGMusic;
     Object.keys(this.level).forEach((lvl) => this.level[lvl] = false);
     title.innerHTML = "typebit"
@@ -113,10 +116,10 @@ export default class TypeBit {
     if (this.score > 50) {
       this.maxEnemies = 4;
       this.numEnemies = 2;
-    } else if (this.score >= 50 && this.score <= 125) {
+    } else if (this.score >= 100 && this.score <= 150) {
       this.maxEnemies = 6;
       this.numEnemies = 4;
-    } if (this.score > 125 && this.score <= 250) {
+    } if (this.score > 150 && this.score <= 250) {
       this.maxEnemies = 7;
       this.numEnemies = 5;
       if (!this.level.med) {
@@ -126,7 +129,7 @@ export default class TypeBit {
     } else if (this.score > 250  && this.score <= 350) {
       this.maxEnemies = 8;
       this.numEnemies = 5;
-      this.bg.changeSpeed(1.5);
+      this.bg.changeSpeed(1);
       this.player.run();
       if (!this.level.hard) {
         audio.src = MUSIC.fastBGMusic;
@@ -150,7 +153,7 @@ export default class TypeBit {
   }
 
   animate(timeStamp, lastTime = 0) {
-    const deltaTime = (timeStamp - lastTime)/1600;
+    const deltaTime = (timeStamp - lastTime)/9000;
     lastTime = timeStamp;
     /*Animate background and player*/
     this.ctx.clearRect.bind(this, 0, 0, this.dimensions.width, this.dimensions.height);

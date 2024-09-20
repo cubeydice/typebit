@@ -1,6 +1,6 @@
 const CONSTANTS = {
   PLAYER_HEALTH: 50,
-  PLAYER_SPEED: 5.5, //higher num === slower; stagger frame speed
+  PLAYER_SPEED: 7, //higher num === slower; stagger frame speed
   PLAYER_WIDTH: 64, //size of player on canvas
   PLAYER_HEIGHT: 64, //size of player on canvas
   SPRITE_WALK: 'assets/game/player/walk.png',

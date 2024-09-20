@@ -1,7 +1,7 @@
 import { WORDS } from "./words";
 
 const CONSTANTS = {
-  ENEMY_SPEED: 2.5,
+  ENEMY_SPEED: 1,
   STAGGER_FRAME: 10,
   ENEMY_WIDTH: 64,
   ENEMY_HEIGHT: 64,
@@ -16,7 +16,7 @@ export default class Enemy {
   constructor(dimensions, speed, pos, enemyWords, enemyWordPos, fps) {
     this.dimensions = dimensions;
     this.speed = Math.floor(speed * CONSTANTS.ENEMY_SPEED + CONSTANTS.ENEMY_SPEED);
-    this.pos_x = Math.floor(CONSTANTS.SPRITE_POS_X + (10 * pos));
+    this.pos_x = Math.floor(CONSTANTS.SPRITE_POS_X + (100 * pos));
     this.pos_y = 0;
     this.stagger_frame = CONSTANTS.STAGGER_FRAME - this.speed;
     this.enemyImg = new Image();
