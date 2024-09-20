@@ -34,3 +34,13 @@ body {
     gap: 4rem;
     margin: 2rem;
 }
+
+#leaderboard {
+    margin: 0.625rem;
+    width: 100%;
+}
+
+#leaderboard > h3 {
+    font-weight: 900;
+    text-decoration: underline;
+}

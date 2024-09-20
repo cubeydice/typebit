@@ -1,6 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
-import { collection, getDocs, addDoc } from "firebase/firestore";
+import { getFirestore, collection, getDocs, addDoc, query, orderBy, limit } from "firebase/firestore";
 
 // Initialize Firebase
 const firebaseConfig = {
@@ -15,18 +14,43 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// try {
-//   const docRef = await addDoc(collection(db, "scores"), {
-//     name: "test",
-//     score: 0
-//   });
+export const enterScore = async (name, score) => {
+  try {
+    const docRef = await addDoc(collection(db, "scores"), {
+      name: name,
+      score: score
+    });
 
-//   console.log("Document written with ID: ", docRef.id);
-// } catch (e) {
-//   console.error("Error adding document: ", e);
-// }
+    console.log("Document written with ID: ", docRef.id);
+  } catch (e) {
+    console.error("Error adding document: ", e);
+  }
+}
 
-export const querySnapshot = await getDocs(collection(db, "scores"));
-querySnapshot.forEach((doc) => {
-  console.log(`${doc.id} => ${JSON.stringify(doc.data())}`);
-});
+export async function getLeaderboard() {
+  const scoresQuery = query(
+      collection(db, "scores"),
+      orderBy("score", "desc"),
+      limit(10)
+  );
+
+  const querySnapshot = await getDocs(scoresQuery);
+
+  const scoreList = document.getElementById("scoreList");
+  scoreList.innerHTML = "";
+
+  let i = 1;
+  querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      const listItem = document.createElement("li");
+      listItem.innerHTML = `
+          <span>#${i}:</span>
+          <span>${data.score || 0}</span>
+      `;
+      scoreList.appendChild(listItem);
+      i++;
+  });
+
+  const lowestHighScore = querySnapshot.docs[9] ? querySnapshot.docs[9].data().score : querySnapshot.docs[i - 2].data().score;
+  return lowestHighScore;
+}

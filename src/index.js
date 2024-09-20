@@ -1,4 +1,5 @@
 import TypeBit from "./scripts/game";
+import { getLeaderboard } from "./scripts/leaderboard";
 
 //DOM Elements
 const canvas = document.getElementById('canvas');
@@ -105,8 +106,9 @@ if (window.mobileCheck()) {
   retry.addEventListener("click", restart)
 
   // Music
-
   mute.addEventListener("click", muteAudio)
 
+  //Leaderboard
+  getLeaderboard();
 }
 
