@@ -1,6 +1,7 @@
 import Player from "./player";
 import Enemy from "./enemy";
 import Background from "./background";
+import querySnapshot from "./leaderboard";
 
 const title = document.getElementById("title");
 const start = document.getElementById("start");

@@ -2,6 +2,7 @@
 
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const Dotenv = require('dotenv-webpack');
 
 const config = {
   entry: [
@@ -32,7 +33,7 @@ const config = {
       }
     ]
   },
-  plugins: [new MiniCssExtractPlugin()]
+  plugins: [new MiniCssExtractPlugin(), new Dotenv()]
 };
 
 module.exports = (env, argv) => {

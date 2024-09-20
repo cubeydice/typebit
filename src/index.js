@@ -1,5 +1,6 @@
 import TypeBit from "./scripts/game";
 
+//DOM Elements
 const canvas = document.getElementById('canvas');
 const mobileError = document.getElementById('mobile-error');
 const gameContainer = document.getElementById("game-container");
