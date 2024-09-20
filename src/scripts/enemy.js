@@ -77,7 +77,7 @@ export default class Enemy {
     }
     if (this.frameTimer < this.fps) {
       CONSTANTS.GAME_FRAME++;
-      this.pos_x -= this.speed/2.5
+      this.pos_x -= this.speed/5;
       this.frameTimer = 0;
     } else {
       this.frameTimer += deltaTime;
