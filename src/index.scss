@@ -4,6 +4,7 @@ body {
     background: white;
     font-family: 'VT323', monospace;
     font-size: 1.25rem;
+    -webkit-user-select: none;
     user-select: none;
 }
 
