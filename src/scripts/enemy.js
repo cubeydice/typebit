@@ -1,4 +1,4 @@
-import { WORDS } from "./words";
+import { getRandomWord } from "./words";
 
 const CONSTANTS = {
   ENEMY_SPEED: 1,
@@ -21,7 +21,7 @@ export default class Enemy {
     this.stagger_frame = CONSTANTS.STAGGER_FRAME - this.speed;
     this.enemyImg = new Image();
     this.enemyImg.src = 'assets/game/enemy/slime.png';
-    this.words = WORDS[Math.floor(Math.random() * WORDS.length)];
+    this.words = getRandomWord();
     this.words_y = CONSTANTS.SPRITE_POS_Y - Math.random() * 150;
     this.score = this.words.length;
     this.destroyed = false;
@@ -42,7 +42,7 @@ export default class Enemy {
   checkWord (enemyWords) {
     if (enemyWords !== undefined) {
       while (enemyWords.includes(this.words)) {
-        this.words = WORDS[Math.floor(Math.random() * WORDS.length)];
+        this.words = getRandomWord();
       }
     }
   }

@@ -1,91 +1,125 @@
-export const WORDS = [
-    "Mike is the best",
-    "Abbey is the best",
-    "Paulo is the best",
-    "I like sushi",
-    "destroy me",
-    "don't kill me",
-    "let me live T_T",
-    "yum lunch",
-    "let it rip",
-    "slime slime slime",
-    "what is love?",
-    "don't hurt me",
+export const WORDS = {
+  easy: [
+    "smile",
+    "hello world",
+    "yum yum",
+    "whatever",
+    "1, 2, 3",
     "Ew!",
-    "do or do not",
-    "roses are red",
-    "coding is cool",
-    "find the One Piece",
-    "drill pierce heavens!",
-    "ask salmon else",
-    "slime slime slime",
-    "krusty krab pizza",
+    "gobble",
+    "Come here.",
+    "octopus",
+    "puff puff",
+    "WOOHOO",
     "UwU",
+    "O_O"
+  ],
+  
+  medium: [
+    "coding is cool",
+    "drink water",
+    "wash your hands",
+    "boba is life",
+    "ball is life",
+    "blue over pink",
+    "shake it off",
+    "keep calm",
+    "roses are red",
+    "I like sushi",
+    "yum lunch",
+    "champagne",
+    "vanilla extract",
+    "Rose Water",
+    "brave new world",
+    "hike and brunch",
+    "it be like that",
+    "my back hurts",
+    "the very best",
+    "is purple blue?",
+    "are you a bully?",
+    "don't mock me",
+    "Who am I?",
+    "what am I?",
+    "I'm just filler"
+  ],
+  
+  hard: [
+    "drill pierce heavens!",
+    "dedicate your heart", 
+    "time stops for no one",
+    "krusty krab pizza",
+    "come along with me",
+    "crying in slime mart",
+    "baby, don't hurt me",
+    "reincarnated as a",
+    "what in the isekai",
+    "hark the herald",
+    "2 + 2 = 5",
+    "booty everywhere",
+    "a bus hit me",
+    "ask salmon else"
+  ],
+  
+  anime: [
+    "find the One Piece",
     "plus ultra",
     "me hokage!",
     "yer a wizard",
-    "slimes not limes",
-    "dedicate your heart",
-    "time stops for no one",
-    "yum yum",
+    "I wanna digivolve.",
+    "do or do not",
+    "let it rip",
+    "what is love?",
+    "don't hurt me",
+    "destroy me",
+    "don't kill me",
+    "let me live T_T",
+    "my slime academia",
+    "slimer moon",
+    "Slimeball Z"
+  ],
+  
+  slime_themed: [
+    "slime slime slime",
     "rise and slime",
     "slime this",
-    "is purple blue?",
-    "are you a bully?",
-    "hike and brunch",
-    "don't mock me",
+    "slimes not limes",
     "slimes be sliming",
-    "it be like that",
-    "drink water",
-    "hello world",
     "i am goo-tiful",
     "stay gooey",
     "you goo-fy",
     "slime feelin' good",
-    "blue over pink",
     "SQUISHY",
     "squish this",
+    "splendid slimes",
+    "snails have slime",
+    "slimageddon"
+  ],
+  
+  misc: [
+    "Mike is the best",
+    "Abbey is the best", 
+    "Paulo is the best",
     "WOW BUNNY",
     "8==D",
-    "1, 2, 3",
-    "whatever",
-    "Who am I?",
-    "what am I?",
-    "I'm just filler",
-    "WOOHOO",
-    "snails have slime",
-    "I wanna digivolve.",
-    "smile",
-    "the very best",
-    "baby, don't hurt me",
-    "shake it off",
-    "keep calm",
-    "champagne",
-    "vanilla extract",
-    "Rose Water",
-    "2 + 2 = 5",
-    "brave new world",
-    "splendid slimes",
-    "gobble",
-    "come along with me",
-    "Come here.",
-    "crying in slime mart",
-    "wash your hands",
-    "boba is life",
-    "ball is life",
-    "octopus",
-    "puff puff",
-    "my back hurts",
-    "booty everywhere",
-    "bewbs",
-    "reincarnated as a",
-    "what in the isekai",
-    "a bus hit me",
-    "hark the herald",
-    "slimageddon",
-    "my slime academia",
-    "slimer moon",
-    "Slimeball Z",
-    "O_O"
-]
+    "bewbs"
+  ]
+};
+
+// Helper function to get all words as a flat array
+export const getAllWords = () => {
+  return Object.values(WORDS).flat();
+};
+
+// Helper function to get random word from a specific category
+export const getRandomWordFromCategory = (category) => {
+  const categoryWords = WORDS[category];
+  if (!categoryWords || categoryWords.length === 0) return null;
+  return categoryWords[Math.floor(Math.random() * categoryWords.length)];
+};
+
+// Helper function to get random word from all categories
+export const getRandomWord = () => {
+  const allWords = getAllWords();
+  return allWords[Math.floor(Math.random() * allWords.length)];
+};
 
