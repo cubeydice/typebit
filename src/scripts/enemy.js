@@ -15,7 +15,7 @@ const CONSTANTS = {
 export default class Enemy {
   constructor(dimensions, speed, pos, enemyWords, enemyWordPos, fps) {
     this.dimensions = dimensions;
-    this.speed = Math.floor(speed * CONSTANTS.ENEMY_SPEED + CONSTANTS.ENEMY_SPEED);
+    this.speed = Math.max(1, Math.floor(speed * CONSTANTS.ENEMY_SPEED + CONSTANTS.ENEMY_SPEED));
     this.pos_x = Math.floor(CONSTANTS.SPRITE_POS_X + (300 * pos));
     this.pos_y = 0;
     this.stagger_frame = CONSTANTS.STAGGER_FRAME - this.speed;

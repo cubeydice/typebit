@@ -57,6 +57,7 @@ export default class TypeBit {
     this.score = 0;
     this.typed = "";
     this.difficultyChange = false;
+    this.enemySpeedMultiplier = 1; // Base speed multiplier
     this.level = {
       med: false,
       hard: false
@@ -116,12 +117,15 @@ export default class TypeBit {
     if (this.score > 50) {
       this.maxEnemies = 4;
       this.numEnemies = 2;
+      this.enemySpeedMultiplier = 1.2;
     } else if (this.score >= 100 && this.score <= 150) {
       this.maxEnemies = 6;
       this.numEnemies = 4;
+      this.enemySpeedMultiplier = 1.4;
     } if (this.score > 150 && this.score <= 250) {
       this.maxEnemies = 7;
       this.numEnemies = 5;
+      this.enemySpeedMultiplier = 1.6;
       if (!this.level.med) {
         audio.src = MUSIC.medBGMusic
         this.level.med = true;
@@ -129,6 +133,7 @@ export default class TypeBit {
     } else if (this.score > 250  && this.score <= 350) {
       this.maxEnemies = 8;
       this.numEnemies = 5;
+      this.enemySpeedMultiplier = 1.8;
       this.bg.changeSpeed(1);
       this.player.run();
       if (!this.level.hard) {
@@ -138,10 +143,12 @@ export default class TypeBit {
     } else if (this.score > 300 && this.score <= 400) {
       this.maxEnemies = 8;
       this.numEnemies = 6;
+      this.enemySpeedMultiplier = 2.0;
     } else if (this.score > 400) {
       this.bg.changeSpeed(2);
       this.maxEnemies = 10;
       this.numEnemies = 6;
+      this.enemySpeedMultiplier = 2.5;
     }
   }
 
@@ -220,7 +227,7 @@ export default class TypeBit {
   addEnemies() {
     for (let i = 0; i < this.numEnemies; i++){
       if (this.enemiesData.enemies.length < this.maxEnemies) {
-        let speed = Math.random()
+        let speed = Math.random() * this.enemySpeedMultiplier
         let pos = Math.random()
         const newEnemy = new Enemy(this.dimensions, speed, pos,
           this.enemiesData.enemyWords, this.enemiesData.enemyWordPos, FPS)
@@ -244,6 +251,9 @@ export default class TypeBit {
         let enemy = this.enemiesData.enemies[enemyIdx]
         enemy.destroy();
         this.score += enemy.score;
+        
+        // Remove the destroyed enemy from all arrays
+        this.removeEnemy(enemy);
       } else {
         if (!audio.muted) {
           MUSIC.mistakeAudio.play();
