@@ -1,75 +1,113 @@
-const CONSTANTS = {
-  GAME_SPEED: 0.5,
-  GAME_FRAME: 0,
-  SPEED_MODS: [0, 0.5, 0.7, 0.9],
-  WIDTH: 1152,
-  HEIGHT: 576,
-}
+const CONFIG = {
+  BASE_SPEED: 0.5,
+  SPEED_MULTIPLIERS: [0, 0.5, 0.7, 0.9], // Parallax effect multipliers
+  CANVAS_WIDTH: 1152,
+  CANVAS_HEIGHT: 576,
+  BACKGROUND_IMAGES: [
+    'assets/game/background/nature_2/1.png',
+    'assets/game/background/nature_2/2.png', 
+    'assets/game/background/nature_5/3.png',
+    'assets/game/background/nature_5/4.png'
+  ]
+};
+
+// Global animation frame for background scrolling
+let backgroundGameFrame = 0;
 export default class Background {
   constructor(ctx, fps) {
-    // this.createImage = this.createImage.bind(this)
     this.ctx = ctx;
-    this.bg = ['assets/game/background/nature_2/1.png',
-          'assets/game/background/nature_2/2.png',
-          'assets/game/background/nature_5/3.png',
-          'assets/game/background/nature_5/4.png'];
     this.layers = [];
     this.fps = fps;
-
-    let i = 0
-    this.bg.forEach(img => {
-      const image = new Image();
-      image.src = img;
-      this.layers.push(new Layer(image, this.ctx, CONSTANTS.SPEED_MODS[i], CONSTANTS.GAME_SPEED, this.fps));
-      i++;
-    })
+    this.currentSpeedMultiplier = 1; // For difficulty scaling
+    
+    this.initializeLayers();
   }
 
-  changeSpeed(speed) {
+  initializeLayers() {
+    CONFIG.BACKGROUND_IMAGES.forEach((imageSrc, index) => {
+      const image = new Image();
+      image.src = imageSrc;
+      
+      const layer = new Layer(
+        image, 
+        this.ctx, 
+        CONFIG.SPEED_MULTIPLIERS[index], 
+        CONFIG.BASE_SPEED, 
+        this.fps
+      );
+      
+      this.layers.push(layer);
+    });
+  }
+
+  changeSpeed(speedMultiplier) {
+    this.currentSpeedMultiplier = speedMultiplier;
     this.layers.forEach((layer) => {
-      layer.changeSpeed(speed);
-    })
+      layer.updateSpeed(speedMultiplier);
+    });
   }
 
   draw(ctx, deltaTime) {
+    // Update global frame for all layers
+    backgroundGameFrame++;
+    
     this.layers.forEach((layer) => {
       layer.update(deltaTime);
       layer.draw();
-    })
+    });
+  }
+
+  // Utility methods
+  getSpeed() {
+    return this.currentSpeedMultiplier;
+  }
+
+  reset() {
+    backgroundGameFrame = 0;
+    this.currentSpeedMultiplier = 1;
+    this.layers.forEach(layer => layer.reset());
   }
 }
 class Layer {
-  constructor(img, ctx, speedMod, speed, fps) {
+  constructor(image, ctx, speedMultiplier, baseSpeed, fps) {
     this.x = 0;
     this.y = 0;
     this.ctx = ctx;
-    this.width = CONSTANTS.WIDTH;
-    this.height = CONSTANTS.HEIGHT;
-    this.img = img;
-    this.speedMod = speedMod;
-    this.speed = speed * this.speedMod
-    this.draw = this.draw.bind(this)
+    this.width = CONFIG.CANVAS_WIDTH;
+    this.height = CONFIG.CANVAS_HEIGHT;
+    this.image = image;
+    this.speedMultiplier = speedMultiplier;
+    this.baseSpeed = baseSpeed;
+    this.currentSpeed = baseSpeed * speedMultiplier;
     this.frameTimer = 0;
     this.fps = fps;
   }
 
   update(deltaTime) {
-    // this.speed = CONSTANTS.GAME_SPEED * this.speedMod
-    if (this.frameTimer > this.fps) {
-      this.x = CONSTANTS.GAME_FRAME * this.speed % (this.width);
+    if (this.frameTimer >= this.fps) {
+      // Calculate scroll position based on global frame and layer speed
+      this.x = (backgroundGameFrame * this.currentSpeed) % this.width;
       this.frameTimer = 0;
-      CONSTANTS.GAME_FRAME--
     } else {
       this.frameTimer += deltaTime;
     }
   }
 
-  changeSpeed(speed) {
-    this.speed = speed;
+  updateSpeed(globalSpeedMultiplier) {
+    this.currentSpeed = this.baseSpeed * this.speedMultiplier * globalSpeedMultiplier;
   }
 
   draw() {
-    this.ctx.drawImage(this.img, this.x, this.y, this.width, this.height)
-    this.ctx.drawImage(this.img, this.x + this.width, this.y, this.width, this.height)
+    if (!this.image.complete) return; // Don't draw if image not loaded
+    
+    // Draw two copies for seamless scrolling
+    this.ctx.drawImage(this.image, -this.x, this.y, this.width, this.height);
+    this.ctx.drawImage(this.image, -this.x + this.width, this.y, this.width, this.height);
+  }
+
+  reset() {
+    this.x = 0;
+    this.frameTimer = 0;
+    this.currentSpeed = this.baseSpeed * this.speedMultiplier;
   }
 }
