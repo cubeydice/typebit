@@ -1,107 +1,149 @@
-const CONSTANTS = {
+const CONFIG = {
   PLAYER_HEALTH: 50,
-  PLAYER_SPEED: 7, //higher num === slower; stagger frame speed
-  PLAYER_WIDTH: 64, //size of player on canvas
-  PLAYER_HEIGHT: 64, //size of player on canvas
-  SPRITE_WALK: 'assets/game/player/walk.png',
-  SPRITE_RUN: 'assets/game/player/run.png',
-  SPRITE_HURT: 'assets/game/player/hurt.png',
-  SPRITE_DEAD: 'assets/game/player/dead.png',
-  GAME_FRAME: 0, //initial game frame
-  SPRITE_FRAME: 0, //starting frame
-  SPRITE_X: 32, //sprite frame size
-  SPRITE_Y: 32, //sprite frame size
-  SPRITE_POS_X: 100, //starting position
-  SPRITE_POS_Y: 440, //starting position
-  SOUND_HURT: 'assets/music/effects/destroy.wav'
-}
+  PLAYER_SPEED: 7, // Higher number = slower animation
+  PLAYER_WIDTH: 64,
+  PLAYER_HEIGHT: 64,
+  SPRITE_WIDTH: 32,
+  SPRITE_HEIGHT: 32,
+  SPRITE_POS_X: 100,
+  SPRITE_POS_Y: 440,
+  DAMAGE_PER_HIT: 10,
+  ANIMATION_FRAMES: 5,
+  SOUND_HURT: 'assets/music/effects/destroy.wav',
+  SPRITES: {
+    WALK: 'assets/game/player/walk.png',
+    RUN: 'assets/game/player/run.png',
+    HURT: 'assets/game/player/hurt.png',
+    DEAD: 'assets/game/player/dead.png'
+  }
+};
+
+// Global animation frame (should ideally be managed by game state)
+let globalGameFrame = 0;
 
 const audio = document.getElementById("bg-music");
-const hurtAudio = new Audio(CONSTANTS.SOUND_HURT);
+const hurtAudio = new Audio(CONFIG.SOUND_HURT);
 hurtAudio.volume = 0.1;
 
 export default class Player {
   constructor(dimensions, fps) {
     this.dimensions = dimensions;
-    this.health = CONSTANTS.PLAYER_HEALTH;
-    this.spriteAnim = {
-      walk: CONSTANTS.SPRITE_WALK,
-      run: CONSTANTS.SPRITE_RUN,
-      attack: CONSTANTS.SPRITE_ATTACK,
-      hurt: CONSTANTS.SPRITE_HURT,
-      dead: CONSTANTS.SPRITE_DEAD
-    }
-    this.playerImg = new Image();
-    this.playerImg.src = CONSTANTS.SPRITE_WALK;
+    this.health = CONFIG.PLAYER_HEALTH;
     this.fps = fps;
+    
+    // Animation state
     this.frameTimer = 0;
+    this.animationFrame = 0;
+    this.isRunning = false;
+    this.isHurt = false;
+    
+    // Load sprites
+    this.sprites = {};
+    Object.entries(CONFIG.SPRITES).forEach(([key, src]) => {
+      this.sprites[key] = new Image();
+      this.sprites[key].src = src;
+    });
+    
+    // Set initial sprite
+    this.currentSprite = this.sprites.WALK;
   }
 
   walk() {
-    this.playerImg.src = this.spriteAnim.walk;
-    this.running = false;
+    this.currentSprite = this.sprites.WALK;
+    this.isRunning = false;
   }
 
   run() {
-    this.playerImg.src = this.spriteAnim.run;
-    this.running = true;
+    this.currentSprite = this.sprites.RUN;
+    this.isRunning = true;
   }
 
   hurt() {
-    CONSTANTS.GAME_FRAME = 1;
+    globalGameFrame = 1;
     if (!audio.muted) {
-      hurtAudio.play()
+      hurtAudio.play();
     }
-    this.playerImg.src = this.spriteAnim.hurt;
-    this.health -= 10;
-    this.hurts = true;
+    this.currentSprite = this.sprites.HURT;
+    this.health -= CONFIG.DAMAGE_PER_HIT;
+    this.isHurt = true;
   }
 
   dead() {
-    CONSTANTS.GAME_FRAME = 0;
-    this.playerImg.src = this.spriteAnim.dead;
+    globalGameFrame = 0;
+    this.currentSprite = this.sprites.DEAD;
   }
 
   draw(ctx, deltaTime) {
-    if (this.outOfHealth() && this.position >= 4){
-    } else if (this.hurts && this.position >= 4) {
-      this.hurts = false;
-      !this.running ? this.walk() : this.run()
-    } else {
-      if (this.frameTimer > this.fps) {
-        this.position = Math.floor(CONSTANTS.GAME_FRAME/CONSTANTS.PLAYER_SPEED) % 5;
-        CONSTANTS.SPRITE_FRAME = CONSTANTS.SPRITE_X * this.position;
-        CONSTANTS.GAME_FRAME++;
-        this.frameTimer = 0;
-      } else {
-        this.frameTimer += deltaTime;
-      }
+    this.updateAnimation(deltaTime);
+    this.drawSprite(ctx);
+  }
+
+  updateAnimation(deltaTime) {
+    // Handle hurt animation completion
+    if (this.isHurt && this.animationFrame >= 4) {
+      this.isHurt = false;
+      this.isRunning ? this.run() : this.walk();
     }
-    ctx.drawImage(this.playerImg, //image file
-      CONSTANTS.SPRITE_FRAME, 0, //position on sprite frame file
-      CONSTANTS.SPRITE_X, CONSTANTS.SPRITE_Y, //size of position on sprite frame file
-      CONSTANTS.SPRITE_POS_X, CONSTANTS.SPRITE_POS_Y, //position on canvas
-      CONSTANTS.PLAYER_WIDTH, CONSTANTS.PLAYER_HEIGHT) //size of sprite on canvas
+    
+    // Update animation frame timing
+    if (this.frameTimer >= this.fps) {
+      if (!this.outOfHealth()) {
+        this.animationFrame = Math.floor(globalGameFrame / CONFIG.PLAYER_SPEED) % CONFIG.ANIMATION_FRAMES;
+        globalGameFrame++;
+      }
+      this.frameTimer = 0;
+    } else {
+      this.frameTimer += deltaTime;
+    }
+  }
+
+  drawSprite(ctx) {
+    if (!this.currentSprite.complete) return; // Don't draw if image not loaded
+    
+    const spriteX = CONFIG.SPRITE_WIDTH * this.animationFrame;
+    
+    ctx.drawImage(
+      this.currentSprite,
+      spriteX, 0, // Source position on sprite sheet
+      CONFIG.SPRITE_WIDTH, CONFIG.SPRITE_HEIGHT, // Source size
+      CONFIG.SPRITE_POS_X, CONFIG.SPRITE_POS_Y, // Destination position
+      CONFIG.PLAYER_WIDTH, CONFIG.PLAYER_HEIGHT // Destination size
+    );
   }
 
   outOfHealth() {
-    if (this.health <= 0) return true;
-    return false;
+    return this.health <= 0;
   }
 
   bounds() {
     return {
-      left: CONSTANTS.SPRITE_POS_X,
-      right: CONSTANTS.SPRITE_POS_X + CONSTANTS.PLAYER_WIDTH,
-      top: CONSTANTS.SPRITE_POS_Y,
-      bottom: CONSTANTS.SPRITE_POS_Y + CONSTANTS.PLAYER_HEIGHT
-    }
+      left: CONFIG.SPRITE_POS_X,
+      right: CONFIG.SPRITE_POS_X + CONFIG.PLAYER_WIDTH,
+      top: CONFIG.SPRITE_POS_Y,
+      bottom: CONFIG.SPRITE_POS_Y + CONFIG.PLAYER_HEIGHT
+    };
   }
 
-  collidesWith(player, enemy) {
-    if (player.right > enemy.left) {
-      return true;
-    }
-    return false;
+  // Proper collision detection with all boundaries
+  collidesWith(playerBounds, enemyBounds) {
+    return !(
+      playerBounds.right < enemyBounds.left ||
+      playerBounds.left > enemyBounds.right ||
+      playerBounds.bottom < enemyBounds.top ||
+      playerBounds.top > enemyBounds.bottom
+    );
+  }
+
+  // Utility methods
+  getHealth() {
+    return this.health;
+  }
+
+  getHealthPercentage() {
+    return (this.health / CONFIG.PLAYER_HEALTH) * 100;
+  }
+
+  isAlive() {
+    return this.health > 0;
   }
 }
