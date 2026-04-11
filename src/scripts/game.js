@@ -46,7 +46,7 @@ export default class TypeBit {
     };
     this.bg = new Background(this.ctx, FPS);
     this.player = new Player(this.dimensions, FPS)
-    this.enemy = new Enemy(this.dimensions, FPS)
+    this.lastTime = 0;
     this.enemiesData = {
       enemies: [],
       enemyWords: [],
@@ -84,7 +84,6 @@ export default class TypeBit {
     Object.keys(this.enemiesData).forEach(enemyData => this.enemiesData[enemyData] = [])
     this.maxEnemies = 4;
     this.numEnemies = 1;
-    this.enemy.frameTimer = 0;
     clearInterval(this.enemyInterval);
 
     //Reset Player Data
@@ -101,7 +100,6 @@ export default class TypeBit {
 
     //Reset Background and Sound
     this.bg.changeSpeed(0.5);
-    this.bg.frameTimer = 0;
     audio.src = MUSIC.introBGMusic;
     Object.keys(this.level).forEach((lvl) => this.level[lvl] = false);
     title.innerHTML = "typebit"
@@ -113,20 +111,20 @@ export default class TypeBit {
   }
 
   changeDifficulty() {
-    if (this.score > 50) {
+    if (this.score > 50 && this.score <= 100) {
       this.maxEnemies = 4;
       this.numEnemies = 2;
-    } else if (this.score >= 100 && this.score <= 150) {
+    } else if (this.score > 100 && this.score <= 150) {
       this.maxEnemies = 6;
       this.numEnemies = 4;
-    } if (this.score > 150 && this.score <= 250) {
+    } else if (this.score > 150 && this.score <= 250) {
       this.maxEnemies = 7;
       this.numEnemies = 5;
       if (!this.level.med) {
         audio.src = MUSIC.medBGMusic
         this.level.med = true;
       }
-    } else if (this.score > 250  && this.score <= 350) {
+    } else if (this.score > 250 && this.score <= 350) {
       this.maxEnemies = 8;
       this.numEnemies = 5;
       this.bg.changeSpeed(1);
@@ -135,7 +133,7 @@ export default class TypeBit {
         audio.src = MUSIC.fastBGMusic;
         this.level.hard = true;
       }
-    } else if (this.score > 300 && this.score <= 400) {
+    } else if (this.score > 350 && this.score <= 400) {
       this.maxEnemies = 8;
       this.numEnemies = 6;
     } else if (this.score > 400) {
@@ -152,11 +150,11 @@ export default class TypeBit {
     this.enemiesData.enemyWordPos.splice(enemyIndex, 1);
   }
 
-  animate(timeStamp, lastTime = 0) {
-    const deltaTime = (timeStamp - lastTime)/1600;
-    lastTime = timeStamp;
+  animate(timeStamp) {
+    const deltaTime = (timeStamp - this.lastTime) / 1600;
+    this.lastTime = timeStamp;
     /*Animate background and player*/
-    this.ctx.clearRect.bind(this, 0, 0, this.dimensions.width, this.dimensions.height);
+    this.ctx.clearRect(0, 0, this.dimensions.width, this.dimensions.height);
     this.bg.draw(this.ctx, deltaTime);
     this.player.draw(this.ctx, deltaTime);
 
