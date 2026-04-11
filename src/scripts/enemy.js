@@ -5,8 +5,6 @@ const CONSTANTS = {
   STAGGER_FRAME: 10,
   ENEMY_WIDTH: 64,
   ENEMY_HEIGHT: 64,
-  GAME_FRAME: 0,
-  SPRITE_FRAME: 0,
   SPRITE_X: 32,
   SPRITE_Y: 25,
   SPRITE_POS_X: 1152,
@@ -30,6 +28,7 @@ export default class Enemy {
     this.fps = fps;
     this.maxFrame = 60;
     this.frameTimer = 0;
+    this.frame = 0;
   }
   checkWordPosition(enemyWordPos) {
     if (enemyWordPos !== undefined) {
@@ -47,7 +46,7 @@ export default class Enemy {
     }
   }
 
-  draw(ctx, deltaTime) {
+  draw(ctx) {
     if (!this.destroyed) {
       ctx.beginPath();
       ctx.fillStyle = "white";
@@ -61,28 +60,22 @@ export default class Enemy {
       ctx.fillText(this.words, this.pos_x - this.words.length, this.words_y - 10)
     }
 
-    this.move(ctx, deltaTime)
+    this.move(ctx)
   }
 
-  move(ctx, deltaTime) {
+  move(ctx) {
     if (this.destroyed && this.position >= 6) {
     } else {
-      this.position = Math.floor(CONSTANTS.GAME_FRAME/this.stagger_frame) % 7;
-      CONSTANTS.SPRITE_FRAME = CONSTANTS.SPRITE_X * this.position;
-      ctx.drawImage(this.enemyImg, CONSTANTS.SPRITE_FRAME, this.pos_y,
+      this.position = Math.floor(this.frame / this.stagger_frame) % 7;
+      const spriteFrame = CONSTANTS.SPRITE_X * this.position;
+      ctx.drawImage(this.enemyImg, spriteFrame, this.pos_y,
         CONSTANTS.SPRITE_X, CONSTANTS.SPRITE_Y,
         this.pos_x, CONSTANTS.SPRITE_POS_Y,
         CONSTANTS.ENEMY_WIDTH, CONSTANTS.ENEMY_HEIGHT
       )
     }
-    if (this.frameTimer < this.fps) {
-      CONSTANTS.GAME_FRAME++;
-      this.pos_x -= this.speed/5;
-      this.frameTimer = 0;
-    } else {
-      this.frameTimer += deltaTime;
-    }
-
+    this.frame++;
+    this.pos_x -= this.speed / 5;
   }
 
   destroy() {

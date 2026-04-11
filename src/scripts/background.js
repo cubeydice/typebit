@@ -1,6 +1,5 @@
 const CONSTANTS = {
   GAME_SPEED: 0.5,
-  GAME_FRAME: 0,
   SPEED_MODS: [0, 0.5, 0.7, 0.9],
   WIDTH: 1152,
   HEIGHT: 576,
@@ -51,21 +50,21 @@ class Layer {
     this.draw = this.draw.bind(this)
     this.frameTimer = 0;
     this.fps = fps;
+    this.frame = 0;
   }
 
   update(deltaTime) {
-    // this.speed = CONSTANTS.GAME_SPEED * this.speedMod
     if (this.frameTimer > this.fps) {
-      this.x = CONSTANTS.GAME_FRAME * this.speed % (this.width);
+      this.x = this.frame * this.speed % (this.width);
       this.frameTimer = 0;
-      CONSTANTS.GAME_FRAME--
+      this.frame--;
     } else {
       this.frameTimer += deltaTime;
     }
   }
 
   changeSpeed(speed) {
-    this.speed = speed;
+    this.speed = speed * this.speedMod;
   }
 
   draw() {
