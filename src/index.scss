@@ -28,9 +28,23 @@ body {
     padding:2rem;
 }
 
-#mobile-error > div {
+#mobile-error .social-icons {
     display: flex;
     justify-content: center;
     gap: 4rem;
     margin: 2rem;
+}
+
+#mobile-error .social-icons img {
+    width: 64px;
+    height: 64px;
+    transition: transform 0.2s ease-in-out;
+    border-radius: 8px;
+}
+
+#mobile-error .social-icons img:hover,
+#mobile-error .social-icons img:focus {
+    transform: scale(1.1);
+    outline: 2px solid #007acc;
+    outline-offset: 2px;
 }

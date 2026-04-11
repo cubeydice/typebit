@@ -1,111 +1,84 @@
 import TypeBit from "./scripts/game";
 
+// Constants
+const INVALID_KEYS = ["Tab", "CapsLock", "Alt", "AltGraph", "Fn", "Super",
+  "Symbol", "NumLock", "Meta", "Hyper", "Shift", "ArrowRight", "ArrowLeft",
+  "ArrowUp", "ArrowDown", "Delete", "Insert", "PageUp", "PageDown"];
+
+// DOM Elements
 const canvas = document.getElementById('canvas');
 const mobileError = document.getElementById('mobile-error');
 const gameContainer = document.getElementById("game-container");
 const retry = document.getElementById("retry");
 const mute = document.getElementById("bg-mute");
 const audio = document.getElementById("bg-music");
-const invalidKeys = ["Tab","CapsLock", "Alt", "AltGraph", "Fn", "Super",
-"Symbol", "NumLock", "Meta", "Hyper", "Shift", "ArrowRight", "ArrowLeft",
-"ArrowUp", "ArrowDown", "Delete", "Insert", "PageUp", "PageDown"]
+
 let gameStarted = false;
 
-//Event to mute Audio
+// Audio mute toggle
 const muteAudio = (e) => {
   e.preventDefault();
-
-  if (!audio.muted) {
-    audio.muted = true;
-    mute.src = "./assets/icons/mute.png";
-  } else {
-    audio.muted = false;
-    mute.src = "./assets/icons/speaker.png";
-  }
-}
-
-/*Check if user is using mobile device*/
-window.mobileCheck = function() {
-  let hasTouchScreen = false;
-
-  //Recommended way to check for mobile device per MDN docs
-  if ("maxTouchPoints" in navigator) {
-    hasTouchScreen = navigator.maxTouchPoints > 0;
-  } else if ("msMaxTouchPoints" in navigator) {
-    hasTouchScreen = navigator.msMaxTouchPoints > 0;
-  } else {
-    const mQ = matchMedia?.("(pointer:coarse)");
-    if (mQ?.media === "(pointer:coarse)") {
-      hasTouchScreen = !!mQ.matches;
-    } else if ("orientation" in window) {
-      hasTouchScreen = true; // deprecated, but good fallback
-    } else {
-      // Only as a last resort, fall back to user agent sniffing
-      const UA = navigator.userAgent;
-      hasTouchScreen =
-        /\b(BlackBerry|webOS|iPhone|IEMobile)\b/i.test(UA) ||
-        /\b(Android|Windows Phone|iPad|iPod)\b/i.test(UA);
-      }
-    }
-  return hasTouchScreen;
+  audio.muted = !audio.muted;
+  mute.src = audio.muted ? "./assets/icons/mute.png" : "./assets/icons/speaker.png";
 };
 
-/*Only show game if not on mobile device*/
-if (window.mobileCheck()) {
-  gameContainer.remove();
-  mobileError.textContent = "sorry, typebit is not compatible with mobile devices 🥺 \r\n\r\n if you get this error on desktop, try disconnecting touch devices and restart"
+// Modern mobile detection
+const isMobileDevice = () => {
+  return navigator.maxTouchPoints > 0 || 
+         navigator.msMaxTouchPoints > 0 ||
+         window.matchMedia?.('(pointer:coarse)').matches ||
+         /\b(BlackBerry|webOS|iPhone|IEMobile|Android|Windows Phone|iPad|iPod)\b/i.test(navigator.userAgent);
+};
 
-  //Add social media icons to mobile view
+// Handle mobile users
+if (isMobileDevice()) {
+  gameContainer.remove();
+  mobileError.textContent = "sorry, typebit is not compatible with mobile devices 🥺 \r\n\r\n if you get this error on desktop, try disconnecting touch devices and restart";
+
+  // Add social icons
+  const iconDiv = document.createElement('div');
   const gitHubIcon = new Image();
   const linkedInIcon = new Image();
+  
   gitHubIcon.src = '../assets/nav/github.png';
   linkedInIcon.src = '../assets/nav/linkedIn.png';
-  gitHubIcon.onclick = function() {
-    window.location.href = 'https://github.com/cubeydice/typebit';
-  };
-  linkedInIcon.onclick = function() {
-    window.location.href = 'hhttps://www.linkedin.com/in/queen-belle-d-118b7859/';
-  };
-  const iconDiv = document.createElement('div');
-  mobileError.appendChild(iconDiv).appendChild(linkedInIcon);
-  mobileError.appendChild(iconDiv).appendChild(gitHubIcon);
+  
+  gitHubIcon.onclick = () => window.open('https://github.com/cubeydice/typebit', '_blank');
+  linkedInIcon.onclick = () => window.open('https://www.linkedin.com/in/queen-belle-d-118b7859/', '_blank');
+  
+  iconDiv.appendChild(linkedInIcon);
+  iconDiv.appendChild(gitHubIcon);
+  mobileError.appendChild(iconDiv);
 } else {
-  // Play Game
+  // Initialize game
   const game = new TypeBit(canvas);
   game.run();
 
-  window.addEventListener('keydown', function (e) {
-    //logic for key press input
+  // Keyboard input
+  window.addEventListener('keydown', (e) => {
     if (gameStarted) {
-      if (invalidKeys.includes(e.key)) {
-      } else if (e.key === "Backspace") {
-        game.typed = game.typed.slice(0,-1);
-      } else if (e.key === "Escape") {
-        game.typed = "";
-      } else if (e.key === "Enter") {
-        game.typed += "~";
-      } else if (e.key === "Control") {
-        game.restart();
-      } else {
-        game.typed += e.key;
+      if (INVALID_KEYS.includes(e.key)) return;
+      
+      switch (e.key) {
+        case "Backspace": game.typed = game.typed.slice(0, -1); break;
+        case "Escape": game.typed = ""; break;
+        case "Enter": game.typed += "~"; break;
+        case "Control": game.restart(); break;
+        default: game.typed += e.key;
       }
     } else {
       game.play();
       gameStarted = true;
     }
-  }, false);
+  });
 
-  //Restart Game
-  const restart = (e) => {
+  // Restart button
+  retry.addEventListener("click", (e) => {
     e.preventDefault();
     gameStarted = false;
     game.restart();
-  }
-  retry.addEventListener("click", restart)
+  });
 
-  // Music
-
-  mute.addEventListener("click", muteAudio)
-
+  // Mute button
+  mute.addEventListener("click", muteAudio);
 }
-
