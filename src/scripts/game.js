@@ -74,7 +74,7 @@ export default class TypeBit {
     this.typed = "";
     title.innerHTML = ""
     start.innerHTML = ""
-    this.enemyInterval = setInterval(this.addEnemies.bind(this), 800)
+    this.enemyInterval = setInterval(this.addEnemies.bind(this), 500)
   }
 
   restart() {
@@ -99,7 +99,7 @@ export default class TypeBit {
     this.player.walk();
 
     //Reset Background and Sound
-    this.bg.changeSpeed(0.5);
+    this.bg.changeSpeed(2);
     audio.src = MUSIC.introBGMusic;
     Object.keys(this.level).forEach((lvl) => this.level[lvl] = false);
     title.innerHTML = "typebit"
@@ -127,7 +127,7 @@ export default class TypeBit {
     } else if (this.score > 250 && this.score <= 350) {
       this.maxEnemies = 8;
       this.numEnemies = 5;
-      this.bg.changeSpeed(1);
+      this.bg.changeSpeed(3);
       this.player.run();
       if (!this.level.hard) {
         audio.src = MUSIC.fastBGMusic;
@@ -137,7 +137,7 @@ export default class TypeBit {
       this.maxEnemies = 8;
       this.numEnemies = 6;
     } else if (this.score > 400) {
-      this.bg.changeSpeed(2);
+      this.bg.changeSpeed(5);
       this.maxEnemies = 10;
       this.numEnemies = 6;
     }
@@ -151,7 +151,7 @@ export default class TypeBit {
   }
 
   animate(timeStamp) {
-    const deltaTime = (timeStamp - this.lastTime) / 1600;
+    const deltaTime = (timeStamp - this.lastTime) / 16;
     this.lastTime = timeStamp;
     /*Animate background and player*/
     this.ctx.clearRect(0, 0, this.dimensions.width, this.dimensions.height);
@@ -219,7 +219,7 @@ export default class TypeBit {
     for (let i = 0; i < this.numEnemies; i++){
       if (this.enemiesData.enemies.length < this.maxEnemies) {
         let speed = Math.random()
-        let pos = Math.random()
+        let pos = i + Math.random()
         const newEnemy = new Enemy(this.dimensions, speed, pos,
           this.enemiesData.enemyWords, this.enemiesData.enemyWordPos, FPS)
         this.enemiesData.enemies.push(newEnemy);
@@ -240,8 +240,8 @@ export default class TypeBit {
 
         let enemyIdx = this.enemiesData.enemyWords.indexOf(this.typedWord)
         let enemy = this.enemiesData.enemies[enemyIdx]
-        enemy.destroy();
         this.score += enemy.score;
+        this.removeEnemy(enemy);
       } else {
         if (!audio.muted) {
           MUSIC.mistakeAudio.play();

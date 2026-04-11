@@ -1,7 +1,7 @@
 import { WORDS } from "./words";
 
 const CONSTANTS = {
-  ENEMY_SPEED: 1,
+  ENEMY_SPEED: 2,
   STAGGER_FRAME: 10,
   ENEMY_WIDTH: 64,
   ENEMY_HEIGHT: 64,
@@ -80,7 +80,7 @@ export default class Enemy {
 
   destroy() {
     this.pos_y = CONSTANTS.SPRITE_Y * 2;
-    CONSTANTS.GAME_FRAME = 1;
+    this.frame = 1;
     this.destroyed = true;
   }
 
