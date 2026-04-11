@@ -54,6 +54,7 @@ export default class TypeBit {
     }
     this.numEnemies = 1;
     this.maxEnemies = 3;
+    this.enemyStagger = 7;
     this.score = 0;
     this.typed = "";
     this.difficultyChange = false;
@@ -84,6 +85,7 @@ export default class TypeBit {
     Object.keys(this.enemiesData).forEach(enemyData => this.enemiesData[enemyData] = [])
     this.maxEnemies = 4;
     this.numEnemies = 1;
+    this.enemyStagger = 7;
     clearInterval(this.enemyInterval);
 
     //Reset Player Data
@@ -96,10 +98,11 @@ export default class TypeBit {
     HEARTS.HEART_4_X = 0;
     HEARTS.HEART_5_X = 0;
     this.player.frameTimer = 0;
+    this.player.animSpeed = 3;
     this.player.walk();
 
     //Reset Background and Sound
-    this.bg.changeSpeed(2);
+    this.bg.changeSpeed(4);
     audio.src = MUSIC.introBGMusic;
     Object.keys(this.level).forEach((lvl) => this.level[lvl] = false);
     title.innerHTML = "typebit"
@@ -112,22 +115,33 @@ export default class TypeBit {
 
   changeDifficulty() {
     if (this.score > 50 && this.score <= 100) {
+      this.maxEnemies = 3;
+      this.numEnemies = 2;
+      this.bg.changeSpeed(5);
+      this.player.animSpeed = 3;
+      this.enemyStagger = 6;
+    } else if (this.score > 100 && this.score <= 150) {
       this.maxEnemies = 4;
       this.numEnemies = 2;
-    } else if (this.score > 100 && this.score <= 150) {
-      this.maxEnemies = 6;
-      this.numEnemies = 4;
-    } else if (this.score > 150 && this.score <= 250) {
-      this.maxEnemies = 7;
-      this.numEnemies = 5;
+      this.bg.changeSpeed(6);
+      this.player.animSpeed = 2;
+      this.enemyStagger = 5;
+    } else if (this.score > 150 && this.score <= 200) {
+      this.maxEnemies = 5;
+      this.numEnemies = 3;
+      this.bg.changeSpeed(7);
+      this.player.animSpeed = 2;
+      this.enemyStagger = 4;
       if (!this.level.med) {
         audio.src = MUSIC.medBGMusic
         this.level.med = true;
       }
     } else if (this.score > 250 && this.score <= 350) {
-      this.maxEnemies = 8;
-      this.numEnemies = 5;
-      this.bg.changeSpeed(3);
+      this.maxEnemies = 6;
+      this.numEnemies = 4;
+      this.bg.changeSpeed(8);
+      this.player.animSpeed = 1;
+      this.enemyStagger = 3;
       this.player.run();
       if (!this.level.hard) {
         audio.src = MUSIC.fastBGMusic;
@@ -135,12 +149,18 @@ export default class TypeBit {
       }
     } else if (this.score > 350 && this.score <= 400) {
       this.maxEnemies = 8;
-      this.numEnemies = 6;
-    } else if (this.score > 400) {
-      this.bg.changeSpeed(5);
+      this.numEnemies = 4;
+      this.bg.changeSpeed(10);
+      this.player.animSpeed = 1;
+      this.enemyStagger = 2;
+    } else if (this.score > 800) {
+      this.bg.changeSpeed(10);
+      this.player.animSpeed = 1;
+      this.enemyStagger = 2;
       this.maxEnemies = 10;
       this.numEnemies = 6;
     }
+    this.enemiesData.enemies.forEach(e => e.stagger_frame = this.enemyStagger);
   }
 
   removeEnemy(enemy) {
@@ -155,7 +175,7 @@ export default class TypeBit {
     this.lastTime = timeStamp;
     /*Animate background and player*/
     this.ctx.clearRect(0, 0, this.dimensions.width, this.dimensions.height);
-    this.bg.draw(this.ctx, deltaTime);
+    this.bg.draw(deltaTime);
     this.player.draw(this.ctx, deltaTime);
 
     /* Game Over Sequence */
@@ -222,6 +242,7 @@ export default class TypeBit {
         let pos = i + Math.random()
         const newEnemy = new Enemy(this.dimensions, speed, pos,
           this.enemiesData.enemyWords, this.enemiesData.enemyWordPos, FPS)
+        newEnemy.stagger_frame = this.enemyStagger;
         this.enemiesData.enemies.push(newEnemy);
         this.enemiesData.enemyWords.push(newEnemy.words)
         this.enemiesData.enemyWordPos.push(newEnemy.words_y)

@@ -34,6 +34,7 @@ export default class Player {
     this.frameTimer = 0;
     this.frame = 0;
     this.spriteFrame = 0;
+    this.animSpeed = CONSTANTS.PLAYER_SPEED;
   }
 
   walk() {
@@ -68,7 +69,7 @@ export default class Player {
       !this.running ? this.walk() : this.run()
     } else {
       if (this.frameTimer > this.fps) {
-        this.position = Math.floor(this.frame / CONSTANTS.PLAYER_SPEED) % 5;
+        this.position = Math.floor(this.frame / this.animSpeed) % 5;
         this.spriteFrame = CONSTANTS.SPRITE_X * this.position;
         this.frame++;
         this.frameTimer = 0;

@@ -1,5 +1,5 @@
 const CONSTANTS = {
-  GAME_SPEED: 2,
+  GAME_SPEED: 4,
   SPEED_MODS: [0, 0.5, 0.7, 0.9],
   WIDTH: 1152,
   HEIGHT: 576,
@@ -30,7 +30,7 @@ export default class Background {
     })
   }
 
-  draw(ctx, deltaTime) {
+  draw(deltaTime) {
     this.layers.forEach((layer) => {
       layer.update(deltaTime);
       layer.draw();
@@ -50,14 +50,12 @@ class Layer {
     this.draw = this.draw.bind(this)
     this.frameTimer = 0;
     this.fps = fps;
-    this.frame = 0;
   }
 
   update(deltaTime) {
     if (this.frameTimer > this.fps) {
-      this.x = this.frame * this.speed % (this.width);
+      this.x = (this.x - this.speed) % this.width;
       this.frameTimer = 0;
-      this.frame--;
     } else {
       this.frameTimer += deltaTime;
     }
