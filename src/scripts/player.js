@@ -7,8 +7,6 @@ const CONSTANTS = {
   SPRITE_RUN: 'assets/game/player/run.png',
   SPRITE_HURT: 'assets/game/player/hurt.png',
   SPRITE_DEAD: 'assets/game/player/dead.png',
-  GAME_FRAME: 0, //initial game frame
-  SPRITE_FRAME: 0, //starting frame
   SPRITE_X: 32, //sprite frame size
   SPRITE_Y: 32, //sprite frame size
   SPRITE_POS_X: 100, //starting position
@@ -27,7 +25,6 @@ export default class Player {
     this.spriteAnim = {
       walk: CONSTANTS.SPRITE_WALK,
       run: CONSTANTS.SPRITE_RUN,
-      attack: CONSTANTS.SPRITE_ATTACK,
       hurt: CONSTANTS.SPRITE_HURT,
       dead: CONSTANTS.SPRITE_DEAD
     }
@@ -35,6 +32,8 @@ export default class Player {
     this.playerImg.src = CONSTANTS.SPRITE_WALK;
     this.fps = fps;
     this.frameTimer = 0;
+    this.frame = 0;
+    this.spriteFrame = 0;
   }
 
   walk() {
@@ -48,7 +47,7 @@ export default class Player {
   }
 
   hurt() {
-    CONSTANTS.GAME_FRAME = 1;
+    this.frame = 1;
     if (!audio.muted) {
       hurtAudio.play()
     }
@@ -58,7 +57,7 @@ export default class Player {
   }
 
   dead() {
-    CONSTANTS.GAME_FRAME = 0;
+    this.frame = 0;
     this.playerImg.src = this.spriteAnim.dead;
   }
 
@@ -69,16 +68,16 @@ export default class Player {
       !this.running ? this.walk() : this.run()
     } else {
       if (this.frameTimer > this.fps) {
-        this.position = Math.floor(CONSTANTS.GAME_FRAME/CONSTANTS.PLAYER_SPEED) % 5;
-        CONSTANTS.SPRITE_FRAME = CONSTANTS.SPRITE_X * this.position;
-        CONSTANTS.GAME_FRAME++;
+        this.position = Math.floor(this.frame / CONSTANTS.PLAYER_SPEED) % 5;
+        this.spriteFrame = CONSTANTS.SPRITE_X * this.position;
+        this.frame++;
         this.frameTimer = 0;
       } else {
         this.frameTimer += deltaTime;
       }
     }
     ctx.drawImage(this.playerImg, //image file
-      CONSTANTS.SPRITE_FRAME, 0, //position on sprite frame file
+      this.spriteFrame, 0, //position on sprite frame file
       CONSTANTS.SPRITE_X, CONSTANTS.SPRITE_Y, //size of position on sprite frame file
       CONSTANTS.SPRITE_POS_X, CONSTANTS.SPRITE_POS_Y, //position on canvas
       CONSTANTS.PLAYER_WIDTH, CONSTANTS.PLAYER_HEIGHT) //size of sprite on canvas
