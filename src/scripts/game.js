@@ -22,6 +22,12 @@ MUSIC.enemyDestroyAudio.volume = 0.1;
 MUSIC.gameOverAudio.volume = 0.3;
 MUSIC.mistakeAudio.volume = 0.2;
 
+const BG_TRACKS = {
+  intro: MUSIC.introBGMusic,
+  med:   MUSIC.medBGMusic,
+  hard:  MUSIC.fastBGMusic,
+};
+
 const HEARTS = {
   SRC_SIZE: 32,
   FULL_SRC_X: 0,
@@ -35,14 +41,14 @@ const HEARTS = {
 // Each tier applies when score > minScore && score <= maxScore.
 // music: 'med' | 'hard' triggers a one-time music/locomotion change on entry.
 const DIFFICULTY_TIERS = [
-  { minScore: 50,  maxScore: 100,      maxEnemies: 3,  numEnemies: 2, bgSpeed: 75,  playerRate: 1/10, enemyRate: 1/10, enemySpeed: 110 },
-  { minScore: 100, maxScore: 150,      maxEnemies: 4,  numEnemies: 2, bgSpeed: 90,  playerRate: 1/12, enemyRate: 1/12, enemySpeed: 140 },
-  { minScore: 150, maxScore: 200,      maxEnemies: 5,  numEnemies: 3, bgSpeed: 105, playerRate: 1/12, enemyRate: 1/15, enemySpeed: 170, music: 'med' },
-  { minScore: 200, maxScore: 250,      maxEnemies: 5,  numEnemies: 3, bgSpeed: 112, playerRate: 1/15, enemyRate: 1/15, enemySpeed: 200 },
-  { minScore: 250, maxScore: 350,      maxEnemies: 6,  numEnemies: 4, bgSpeed: 120, playerRate: 1/20, enemyRate: 1/20, enemySpeed: 240, music: 'hard' },
-  { minScore: 350, maxScore: 400,      maxEnemies: 8,  numEnemies: 4, bgSpeed: 150, playerRate: 1/25, enemyRate: 1/25, enemySpeed: 280 },
-  { minScore: 400, maxScore: 800,      maxEnemies: 9,  numEnemies: 5, bgSpeed: 150, playerRate: 1/28, enemyRate: 1/28, enemySpeed: 320 },
-  { minScore: 800, maxScore: Infinity, maxEnemies: 10, numEnemies: 6, bgSpeed: 150, playerRate: 1/30, enemyRate: 1/30, enemySpeed: 370 },
+  { minScore: 50,   maxScore: 150,     maxEnemies: 3,  numEnemies: 2, bgSpeed: 65,  playerRate: 1/9,  enemyRate: 1/9,  enemySpeed: 75,  music: 'med'  },
+  { minScore: 150,  maxScore: 300,     maxEnemies: 4,  numEnemies: 2, bgSpeed: 78,  playerRate: 1/10, enemyRate: 1/10, enemySpeed: 100, music: 'med'  },
+  { minScore: 300,  maxScore: 500,     maxEnemies: 5,  numEnemies: 3, bgSpeed: 85,  playerRate: 1/12, enemyRate: 1/12, enemySpeed: 120, music: 'med'  },
+  { minScore: 500,  maxScore: 750,     maxEnemies: 6,  numEnemies: 3, bgSpeed: 110, playerRate: 1/14, enemyRate: 1/14, enemySpeed: 150, music: 'hard', run: true },
+  { minScore: 750,  maxScore: 1000,    maxEnemies: 7,  numEnemies: 4, bgSpeed: 120, playerRate: 1/18, enemyRate: 1/18, enemySpeed: 155, music: 'hard' },
+  { minScore: 1000, maxScore: 1500,    maxEnemies: 8,  numEnemies: 4, bgSpeed: 135, playerRate: 1/22, enemyRate: 1/22, enemySpeed: 180, music: 'hard' },
+  { minScore: 1500, maxScore: 2500,    maxEnemies: 9,  numEnemies: 5, bgSpeed: 140, playerRate: 1/26, enemyRate: 1/26, enemySpeed: 210, music: 'hard' },
+  { minScore: 2500, maxScore: Infinity, maxEnemies: 10, numEnemies: 6, bgSpeed: 180, playerRate: 1/30, enemyRate: 1/30, enemySpeed: 250, music: 'hard' },
 ];
 
 export default class TypeBit {
@@ -67,15 +73,12 @@ export default class TypeBit {
     this.score = 0;
     this.typed = "";
     this.running = false;
-    this.level = {
-      med: false,
-      hard: false
-    }
+    this.currentMusic = 'intro';
   }
 
   run() {
     this.running = false;
-    audio.src = MUSIC.introBGMusic;
+    audio.src = BG_TRACKS.intro;
     this.animate(0);
   }
 
@@ -110,8 +113,8 @@ export default class TypeBit {
 
     // Reset background and sound
     this.bg.changeSpeed(60);
-    audio.src = MUSIC.introBGMusic;
-    Object.keys(this.level).forEach(lvl => this.level[lvl] = false);
+    audio.src = BG_TRACKS.intro;
+    this.currentMusic = 'intro';
     title.innerHTML = "typebit"
     start.innerHTML = "press any key to start"
   }
@@ -131,14 +134,10 @@ export default class TypeBit {
     this.enemyFrameDuration   = tier.enemyRate;
     this.enemyBaseSpeed       = tier.enemySpeed;
 
-    if (tier.music === 'med' && !this.level.med) {
-      audio.src = MUSIC.medBGMusic;
-      this.level.med = true;
-    }
-    if (tier.music === 'hard' && !this.level.hard) {
-      audio.src = MUSIC.fastBGMusic;
-      this.player.run();
-      this.level.hard = true;
+    if (tier.music !== this.currentMusic) {
+      this.currentMusic = tier.music;
+      audio.src = BG_TRACKS[tier.music];
+      if (tier.run) this.player.run();
     }
 
     this.enemiesData.enemies.forEach(e => {
