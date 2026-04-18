@@ -74,6 +74,8 @@ export default class TypeBit {
     this.typed = "";
     this.running = false;
     this.currentMusic = 'intro';
+    this.fadeAlpha = 0;
+    this.fading = false;
   }
 
   run() {
@@ -115,6 +117,8 @@ export default class TypeBit {
     this.bg.changeSpeed(60);
     audio.src = BG_TRACKS.intro;
     this.currentMusic = 'intro';
+    this.fadeAlpha = 0;
+    this.fading = false;
     title.innerHTML = "typebit"
     start.innerHTML = "press any key to start"
   }
@@ -176,6 +180,14 @@ export default class TypeBit {
       start.innerHTML = `final score: ${this.score} <br>[ctrl] to restart`;
       clearInterval(this.enemyInterval);
       this.running = false;
+      this.fading = true;
+    }
+
+    if (this.fading) {
+      this.fadeAlpha = Math.min(this.fadeAlpha + deltaTime * 0.4, 1);
+      this.ctx.fillStyle = `rgba(0, 0, 0, ${this.fadeAlpha})`;
+      this.ctx.fillRect(0, 0, this.dimensions.width, this.dimensions.height);
+      this.player.draw(this.ctx);
     }
 
     if (this.running) {
