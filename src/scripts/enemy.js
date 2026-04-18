@@ -40,10 +40,13 @@ export default class Enemy {
   }
 
   checkWordPosition(enemyWordPos) {
-    if (enemyWordPos !== undefined) {
-      while (enemyWordPos.includes(this.words_y)) {
-        this.words_y += 10;
-      }
+    if (!enemyWordPos) return;
+    const MIN_SPACING = 28; // slightly larger than bubble height
+    const MAX_ATTEMPTS = 20;
+    for (let i = 0; i < MAX_ATTEMPTS; i++) {
+      const tooClose = enemyWordPos.some(y => Math.abs(y - this.words_y) < MIN_SPACING);
+      if (!tooClose) break;
+      this.words_y = CONSTANTS.SPRITE_POS_Y - Math.random() * 150;
     }
   }
 
@@ -68,7 +71,8 @@ export default class Enemy {
     const TEXT_HEIGHT = 20; // fixed regardless of glyphs (h, g, etc.)
     ctx.font = "24px VT323";
     const textWidth = ctx.measureText(this.words).width;
-    const bubbleX = this.pos_x - textWidth / 2 - PAD_X;
+    const centerX = this.pos_x + CONSTANTS.ENEMY_WIDTH / 2;
+    const bubbleX = centerX - textWidth / 2 - PAD_X;
     const bubbleY = this.words_y - TEXT_HEIGHT / 2 - PAD_Y;
     const bubbleW = textWidth + PAD_X * 2;
     const bubbleH = TEXT_HEIGHT + PAD_Y * 2;
@@ -83,7 +87,7 @@ export default class Enemy {
 
     ctx.fillStyle = "black";
     ctx.textBaseline = "middle";
-    ctx.fillText(this.words, this.pos_x - textWidth / 2, this.words_y);
+    ctx.fillText(this.words, centerX - textWidth / 2, this.words_y);
     ctx.textBaseline = "alphabetic";
 
     // Sprite
