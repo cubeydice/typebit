@@ -55,7 +55,7 @@ export default class TypeBit {
     this.enemyFrameDuration = 1/8;  // 8 fps enemy animation (initial)
     this.score = 0;
     this.typed = "";
-    this.difficultyChange = false;
+    this.running = false;
     this.level = {
       med: false,
       hard: false
@@ -93,6 +93,7 @@ export default class TypeBit {
     this.player.frameDuration = 1/8;
     this.player.frameTimer = 0;
     this.player.frame = 0;
+    this.player.hurts = false;
     this.player.walk();
     HEARTS.HEART_1_X = 0;
     HEARTS.HEART_2_X = 0;
@@ -132,6 +133,11 @@ export default class TypeBit {
         audio.src = MUSIC.medBGMusic;
         this.level.med = true;
       }
+    } else if (this.score > 200 && this.score <= 250) {
+      this.maxEnemies = 5;  this.numEnemies = 3;
+      this.bg.changeSpeed(225);
+      this.player.frameDuration = 1/15;
+      this.enemyFrameDuration   = 1/15;
     } else if (this.score > 250 && this.score <= 350) {
       this.maxEnemies = 6;  this.numEnemies = 4;
       this.bg.changeSpeed(240);
@@ -147,6 +153,11 @@ export default class TypeBit {
       this.bg.changeSpeed(300);
       this.player.frameDuration = 1/25;
       this.enemyFrameDuration   = 1/25;
+    } else if (this.score > 400 && this.score <= 800) {
+      this.maxEnemies = 9;  this.numEnemies = 5;
+      this.bg.changeSpeed(300);
+      this.player.frameDuration = 1/28;
+      this.enemyFrameDuration   = 1/28;
     } else if (this.score > 800) {
       this.maxEnemies = 10; this.numEnemies = 6;
       this.bg.changeSpeed(300);
@@ -241,11 +252,11 @@ export default class TypeBit {
 
   wordSubmit() {
     if (this.typed.slice(-1) === "~") {
-      this.typedWord = this.typed.slice(0, -1);
+      const typedWord = this.typed.slice(0, -1);
 
-      if (this.enemiesData.enemyWords.includes(this.typedWord)) {
+      if (this.enemiesData.enemyWords.includes(typedWord)) {
         if (!audio.muted) MUSIC.enemyDestroyAudio.play();
-        const idx = this.enemiesData.enemyWords.indexOf(this.typedWord);
+        const idx = this.enemiesData.enemyWords.indexOf(typedWord);
         const enemy = this.enemiesData.enemies[idx];
         this.score += enemy.score;
         this.removeEnemy(enemy);

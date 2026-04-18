@@ -63,7 +63,7 @@ if (isMobileDevice()) {
         case "Backspace": game.typed = game.typed.slice(0, -1); break;
         case "Escape": game.typed = ""; break;
         case "Enter": game.typed += "~"; break;
-        case "Control": game.restart(); break;
+        case "Control": game.restart(); gameStarted = false; break;
         default: game.typed += e.key;
       }
     } else {
