@@ -25,9 +25,9 @@ export default class Enemy {
     this.enemyImg.src = 'assets/game/enemy/slime.png';
     this.words = WORDS[Math.floor(Math.random() * WORDS.length)];
     this.words_y = CONSTANTS.SPRITE_POS_Y - Math.random() * 150;
-    this.score = this.words.length;
     this.checkWord(enemyWords);
     this.checkWordPosition(enemyWordPos);
+    this.score = this.words.length; // set after checkWord resolves the final word
   }
 
   checkWord(enemyWords) {

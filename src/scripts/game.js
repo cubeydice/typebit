@@ -81,7 +81,7 @@ export default class TypeBit {
 
     // Reset enemies
     Object.keys(this.enemiesData).forEach(key => this.enemiesData[key] = []);
-    this.maxEnemies = 4;
+    this.maxEnemies = 3;
     this.numEnemies = 1;
     this.enemyFrameDuration = 1/8;
     clearInterval(this.enemyInterval);
@@ -159,6 +159,7 @@ export default class TypeBit {
 
   removeEnemy(enemy) {
     const idx = this.enemiesData.enemies.indexOf(enemy);
+    if (idx === -1) return;
     this.enemiesData.enemies.splice(idx, 1);
     this.enemiesData.enemyWords.splice(idx, 1);
     this.enemiesData.enemyWordPos.splice(idx, 1);
@@ -194,19 +195,19 @@ export default class TypeBit {
       this.health(this.ctx);
       this.wordSubmit();
 
+      const toRemove = new Set();
       this.enemiesData.enemies.forEach(enemy => {
         enemy.update(deltaTime);
         enemy.draw(this.ctx);
 
         if (enemy.bounds().right < 0) {
-          this.removeEnemy(enemy);
-        }
-
-        if (this.player.collidesWith(this.player.bounds(), enemy.bounds())) {
+          toRemove.add(enemy);
+        } else if (this.player.collidesWith(this.player.bounds(), enemy.bounds())) {
           this.player.hurt();
-          this.removeEnemy(enemy);
+          toRemove.add(enemy);
         }
       });
+      toRemove.forEach(enemy => this.removeEnemy(enemy));
 
       this.status(this.ctx);
     }
