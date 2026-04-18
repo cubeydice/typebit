@@ -63,17 +63,28 @@ export default class Enemy {
 
   draw(ctx) {
     // Word label
+    const PAD_X = 6;
+    const PAD_Y = 2;
+    const TEXT_HEIGHT = 20; // fixed regardless of glyphs (h, g, etc.)
+    ctx.font = "24px VT323";
+    const textWidth = ctx.measureText(this.words).width;
+    const bubbleX = this.pos_x - textWidth / 2 - PAD_X;
+    const bubbleY = this.words_y - TEXT_HEIGHT / 2 - PAD_Y;
+    const bubbleW = textWidth + PAD_X * 2;
+    const bubbleH = TEXT_HEIGHT + PAD_Y * 2;
+
     ctx.beginPath();
     ctx.fillStyle = "white";
-    ctx.roundRect(this.pos_x - this.words.length - 9, this.words_y - 28, (this.words.length * 10) + 10, 22, [10]);
+    ctx.roundRect(bubbleX, bubbleY, bubbleW, bubbleH, [10]);
     ctx.fill();
     ctx.strokeStyle = "gray";
     ctx.lineWidth = 1;
     ctx.stroke();
 
     ctx.fillStyle = "black";
-    ctx.font = "24px VT323";
-    ctx.fillText(this.words, this.pos_x - this.words.length, this.words_y - 10);
+    ctx.textBaseline = "middle";
+    ctx.fillText(this.words, this.pos_x - textWidth / 2, this.words_y);
+    ctx.textBaseline = "alphabetic";
 
     // Sprite
     const spriteX = CONSTANTS.SPRITE_X * this.frame;
