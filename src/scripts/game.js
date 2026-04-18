@@ -24,6 +24,8 @@ MUSIC.mistakeAudio.volume = 0.2;
 
 const HEARTS = {
   SRC_SIZE: 32,
+  FULL_SRC_X: 0,
+  EMPTY_SRC_X: 64,  // sprite sheet: full=0, half=32, empty=64
   CANVAS_SIZE: 64,
   POS_X: 40,
   POS_Y: 27,
@@ -242,7 +244,7 @@ export default class TypeBit {
 
   health(ctx) {
     for (let i = 0; i < HEARTS.COUNT; i++) {
-      const srcX = this.player.health < (i + 1) * 10 ? HEARTS.SRC_SIZE : 0;
+      const srcX = this.player.health < (i + 1) * 10 ? HEARTS.EMPTY_SRC_X : HEARTS.FULL_SRC_X;
       ctx.drawImage(hearts,
         srcX, 0,
         HEARTS.SRC_SIZE, HEARTS.SRC_SIZE,
