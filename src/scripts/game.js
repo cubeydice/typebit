@@ -143,9 +143,9 @@ export default class TypeBit {
       this.bg.changeSpeed(240);
       this.player.frameDuration = 1/20;
       this.enemyFrameDuration   = 1/20;
-      this.player.run();
       if (!this.level.hard) {
         audio.src = MUSIC.fastBGMusic;
+        this.player.run();
         this.level.hard = true;
       }
     } else if (this.score > 350 && this.score <= 400) {
@@ -200,9 +200,8 @@ export default class TypeBit {
       this.running = false;
     }
 
-    this.changeDifficulty();
-
     if (this.running) {
+      this.changeDifficulty();
       this.health(this.ctx);
       this.wordSubmit();
 
