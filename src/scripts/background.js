@@ -1,44 +1,42 @@
 const CONSTANTS = {
-  GAME_SPEED: 4,
+  GAME_SPEED: 120,              // pixels per second (base scroll speed)
   SPEED_MODS: [0, 0.5, 0.7, 0.9],
   WIDTH: 1152,
   HEIGHT: 576,
 }
-export default class Background {
-  constructor(ctx, fps) {
-    // this.createImage = this.createImage.bind(this)
-    this.ctx = ctx;
-    this.bg = ['assets/game/background/nature_2/1.png',
-          'assets/game/background/nature_2/2.png',
-          'assets/game/background/nature_5/3.png',
-          'assets/game/background/nature_5/4.png'];
-    this.layers = [];
-    this.fps = fps;
 
-    let i = 0
-    this.bg.forEach(img => {
+export default class Background {
+  constructor(ctx) {
+    this.ctx = ctx;
+    const sources = [
+      'assets/game/background/nature_2/1.png',
+      'assets/game/background/nature_2/2.png',
+      'assets/game/background/nature_5/3.png',
+      'assets/game/background/nature_5/4.png'
+    ];
+
+    this.layers = sources.map((src, i) => {
       const image = new Image();
-      image.src = img;
-      this.layers.push(new Layer(image, this.ctx, CONSTANTS.SPEED_MODS[i], CONSTANTS.GAME_SPEED, this.fps));
-      i++;
-    })
+      image.src = src;
+      return new Layer(image, this.ctx, CONSTANTS.SPEED_MODS[i], CONSTANTS.GAME_SPEED);
+    });
   }
 
   changeSpeed(speed) {
-    this.layers.forEach((layer) => {
-      layer.changeSpeed(speed);
-    })
+    this.layers.forEach(layer => layer.changeSpeed(speed));
   }
 
-  draw(deltaTime) {
-    this.layers.forEach((layer) => {
-      layer.update(deltaTime);
-      layer.draw();
-    })
+  update(deltaTime) {
+    this.layers.forEach(layer => layer.update(deltaTime));
+  }
+
+  draw() {
+    this.layers.forEach(layer => layer.draw());
   }
 }
+
 class Layer {
-  constructor(img, ctx, speedMod, speed, fps) {
+  constructor(img, ctx, speedMod, speed) {
     this.x = 0;
     this.y = 0;
     this.ctx = ctx;
@@ -46,19 +44,11 @@ class Layer {
     this.height = CONSTANTS.HEIGHT;
     this.img = img;
     this.speedMod = speedMod;
-    this.speed = speed * this.speedMod
-    this.draw = this.draw.bind(this)
-    this.frameTimer = 0;
-    this.fps = fps;
+    this.speed = speed * this.speedMod; // pixels per second
   }
 
   update(deltaTime) {
-    if (this.frameTimer > this.fps) {
-      this.x = (this.x - this.speed) % this.width;
-      this.frameTimer = 0;
-    } else {
-      this.frameTimer += deltaTime;
-    }
+    this.x = (this.x - this.speed * deltaTime) % this.width;
   }
 
   changeSpeed(speed) {
@@ -66,7 +56,7 @@ class Layer {
   }
 
   draw() {
-    this.ctx.drawImage(this.img, this.x, this.y, this.width, this.height)
-    this.ctx.drawImage(this.img, this.x + this.width, this.y, this.width, this.height)
+    this.ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
+    this.ctx.drawImage(this.img, this.x + this.width, this.y, this.width, this.height);
   }
 }

@@ -1,16 +1,17 @@
 const CONSTANTS = {
   PLAYER_HEALTH: 50,
-  PLAYER_SPEED: 3, //higher num === slower; stagger frame speed
-  PLAYER_WIDTH: 64, //size of player on canvas
-  PLAYER_HEIGHT: 64, //size of player on canvas
+  ANIM_RATE: 8,           // animation frames per second (base walk speed)
+  FRAME_COUNT: 5,
+  PLAYER_WIDTH: 64,
+  PLAYER_HEIGHT: 64,
   SPRITE_WALK: 'assets/game/player/walk.png',
   SPRITE_RUN: 'assets/game/player/run.png',
   SPRITE_HURT: 'assets/game/player/hurt.png',
   SPRITE_DEAD: 'assets/game/player/dead.png',
-  SPRITE_X: 32, //sprite frame size
-  SPRITE_Y: 32, //sprite frame size
-  SPRITE_POS_X: 100, //starting position
-  SPRITE_POS_Y: 440, //starting position
+  SPRITE_X: 32,
+  SPRITE_Y: 32,
+  SPRITE_POS_X: 100,
+  SPRITE_POS_Y: 440,
   SOUND_HURT: 'assets/music/effects/destroy.wav'
 }
 
@@ -19,7 +20,7 @@ const hurtAudio = new Audio(CONSTANTS.SOUND_HURT);
 hurtAudio.volume = 0.1;
 
 export default class Player {
-  constructor(dimensions, fps) {
+  constructor(dimensions) {
     this.dimensions = dimensions;
     this.health = CONSTANTS.PLAYER_HEALTH;
     this.spriteAnim = {
@@ -27,14 +28,14 @@ export default class Player {
       run: CONSTANTS.SPRITE_RUN,
       hurt: CONSTANTS.SPRITE_HURT,
       dead: CONSTANTS.SPRITE_DEAD
-    }
+    };
     this.playerImg = new Image();
     this.playerImg.src = CONSTANTS.SPRITE_WALK;
-    this.fps = fps;
+    this.frameDuration = 1 / CONSTANTS.ANIM_RATE; // seconds per animation frame
     this.frameTimer = 0;
     this.frame = 0;
-    this.spriteFrame = 0;
-    this.animSpeed = CONSTANTS.PLAYER_SPEED;
+    this.running = false;
+    this.hurts = false;
   }
 
   walk() {
@@ -48,10 +49,8 @@ export default class Player {
   }
 
   hurt() {
-    this.frame = 1;
-    if (!audio.muted) {
-      hurtAudio.play()
-    }
+    this.frame = 0;
+    if (!audio.muted) hurtAudio.play();
     this.playerImg.src = this.spriteAnim.hurt;
     this.health -= 10;
     this.hurts = true;
@@ -62,31 +61,40 @@ export default class Player {
     this.playerImg.src = this.spriteAnim.dead;
   }
 
-  draw(ctx, deltaTime) {
-    if (this.outOfHealth() && this.position >= 4){
-    } else if (this.hurts && this.position >= 4) {
-      this.hurts = false;
-      !this.running ? this.walk() : this.run()
-    } else {
-      if (this.frameTimer > this.fps) {
-        this.position = Math.floor(this.frame / this.animSpeed) % 5;
-        this.spriteFrame = CONSTANTS.SPRITE_X * this.position;
-        this.frame++;
-        this.frameTimer = 0;
-      } else {
-        this.frameTimer += deltaTime;
-      }
+  update(deltaTime) {
+    this.frameTimer += deltaTime;
+    while (this.frameTimer >= this.frameDuration) {
+      this.frameTimer -= this.frameDuration;
+      this._advanceFrame();
     }
-    ctx.drawImage(this.playerImg, //image file
-      this.spriteFrame, 0, //position on sprite frame file
-      CONSTANTS.SPRITE_X, CONSTANTS.SPRITE_Y, //size of position on sprite frame file
-      CONSTANTS.SPRITE_POS_X, CONSTANTS.SPRITE_POS_Y, //position on canvas
-      CONSTANTS.PLAYER_WIDTH, CONSTANTS.PLAYER_HEIGHT) //size of sprite on canvas
+  }
+
+  _advanceFrame() {
+    // Hold on the last frame of the death animation
+    if (this.outOfHealth() && this.frame >= CONSTANTS.FRAME_COUNT - 1) return;
+
+    this.frame = (this.frame + 1) % CONSTANTS.FRAME_COUNT;
+
+    // When hurt animation completes a full cycle, return to normal locomotion
+    if (this.hurts && this.frame === 0) {
+      this.hurts = false;
+      !this.running ? this.walk() : this.run();
+    }
+  }
+
+  draw(ctx) {
+    const spriteX = CONSTANTS.SPRITE_X * this.frame;
+    ctx.drawImage(
+      this.playerImg,
+      spriteX, 0,
+      CONSTANTS.SPRITE_X, CONSTANTS.SPRITE_Y,
+      CONSTANTS.SPRITE_POS_X, CONSTANTS.SPRITE_POS_Y,
+      CONSTANTS.PLAYER_WIDTH, CONSTANTS.PLAYER_HEIGHT
+    );
   }
 
   outOfHealth() {
-    if (this.health <= 0) return true;
-    return false;
+    return this.health <= 0;
   }
 
   bounds() {
@@ -95,13 +103,10 @@ export default class Player {
       right: CONSTANTS.SPRITE_POS_X + CONSTANTS.PLAYER_WIDTH,
       top: CONSTANTS.SPRITE_POS_Y,
       bottom: CONSTANTS.SPRITE_POS_Y + CONSTANTS.PLAYER_HEIGHT
-    }
+    };
   }
 
   collidesWith(player, enemy) {
-    if (player.right > enemy.left) {
-      return true;
-    }
-    return false;
+    return player.right > enemy.left;
   }
 }

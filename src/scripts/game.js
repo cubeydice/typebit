@@ -35,8 +35,6 @@ const HEARTS = {
   HEART_CANVAS_SIZE: 64
 };
 
-const FPS = 1000/500;
-
 export default class TypeBit {
   constructor(canvas) {
     this.ctx = canvas.getContext("2d");
@@ -44,8 +42,8 @@ export default class TypeBit {
       width: canvas.width,
       height: canvas.height
     };
-    this.bg = new Background(this.ctx, FPS);
-    this.player = new Player(this.dimensions, FPS)
+    this.bg = new Background(this.ctx);
+    this.player = new Player(this.dimensions);
     this.lastTime = 0;
     this.enemiesData = {
       enemies: [],
@@ -54,7 +52,7 @@ export default class TypeBit {
     }
     this.numEnemies = 1;
     this.maxEnemies = 3;
-    this.enemyStagger = 7;
+    this.enemyFrameDuration = 1/8;  // 8 fps enemy animation (initial)
     this.score = 0;
     this.typed = "";
     this.difficultyChange = false;
@@ -81,110 +79,107 @@ export default class TypeBit {
   restart() {
     this.running = false;
 
-    //Reset Enemies
-    Object.keys(this.enemiesData).forEach(enemyData => this.enemiesData[enemyData] = [])
+    // Reset enemies
+    Object.keys(this.enemiesData).forEach(key => this.enemiesData[key] = []);
     this.maxEnemies = 4;
     this.numEnemies = 1;
-    this.enemyStagger = 7;
+    this.enemyFrameDuration = 1/8;
     clearInterval(this.enemyInterval);
 
-    //Reset Player Data
+    // Reset player
     this.typed = "";
     this.score = 0;
     this.player.health = 50;
+    this.player.frameDuration = 1/8;
+    this.player.frameTimer = 0;
+    this.player.frame = 0;
+    this.player.walk();
     HEARTS.HEART_1_X = 0;
     HEARTS.HEART_2_X = 0;
     HEARTS.HEART_3_X = 0;
     HEARTS.HEART_4_X = 0;
     HEARTS.HEART_5_X = 0;
-    this.player.frameTimer = 0;
-    this.player.animSpeed = 3;
-    this.player.walk();
 
-    //Reset Background and Sound
-    this.bg.changeSpeed(4);
+    // Reset background and sound
+    this.bg.changeSpeed(120);
     audio.src = MUSIC.introBGMusic;
-    Object.keys(this.level).forEach((lvl) => this.level[lvl] = false);
+    Object.keys(this.level).forEach(lvl => this.level[lvl] = false);
     title.innerHTML = "typebit"
     start.innerHTML = "press any key to start"
   }
 
   gameOver() {
-    return this.player.outOfHealth()
+    return this.player.outOfHealth();
   }
 
   changeDifficulty() {
     if (this.score > 50 && this.score <= 100) {
-      this.maxEnemies = 3;
-      this.numEnemies = 2;
-      this.bg.changeSpeed(5);
-      this.player.animSpeed = 3;
-      this.enemyStagger = 6;
+      this.maxEnemies = 3;  this.numEnemies = 2;
+      this.bg.changeSpeed(150);
+      this.player.frameDuration = 1/10;
+      this.enemyFrameDuration   = 1/10;
     } else if (this.score > 100 && this.score <= 150) {
-      this.maxEnemies = 4;
-      this.numEnemies = 2;
-      this.bg.changeSpeed(6);
-      this.player.animSpeed = 2;
-      this.enemyStagger = 5;
+      this.maxEnemies = 4;  this.numEnemies = 2;
+      this.bg.changeSpeed(180);
+      this.player.frameDuration = 1/12;
+      this.enemyFrameDuration   = 1/12;
     } else if (this.score > 150 && this.score <= 200) {
-      this.maxEnemies = 5;
-      this.numEnemies = 3;
-      this.bg.changeSpeed(7);
-      this.player.animSpeed = 2;
-      this.enemyStagger = 4;
+      this.maxEnemies = 5;  this.numEnemies = 3;
+      this.bg.changeSpeed(210);
+      this.player.frameDuration = 1/12;
+      this.enemyFrameDuration   = 1/15;
       if (!this.level.med) {
-        audio.src = MUSIC.medBGMusic
+        audio.src = MUSIC.medBGMusic;
         this.level.med = true;
       }
     } else if (this.score > 250 && this.score <= 350) {
-      this.maxEnemies = 6;
-      this.numEnemies = 4;
-      this.bg.changeSpeed(8);
-      this.player.animSpeed = 1;
-      this.enemyStagger = 3;
+      this.maxEnemies = 6;  this.numEnemies = 4;
+      this.bg.changeSpeed(240);
+      this.player.frameDuration = 1/20;
+      this.enemyFrameDuration   = 1/20;
       this.player.run();
       if (!this.level.hard) {
         audio.src = MUSIC.fastBGMusic;
         this.level.hard = true;
       }
     } else if (this.score > 350 && this.score <= 400) {
-      this.maxEnemies = 8;
-      this.numEnemies = 4;
-      this.bg.changeSpeed(10);
-      this.player.animSpeed = 1;
-      this.enemyStagger = 2;
+      this.maxEnemies = 8;  this.numEnemies = 4;
+      this.bg.changeSpeed(300);
+      this.player.frameDuration = 1/25;
+      this.enemyFrameDuration   = 1/25;
     } else if (this.score > 800) {
-      this.bg.changeSpeed(10);
-      this.player.animSpeed = 1;
-      this.enemyStagger = 2;
-      this.maxEnemies = 10;
-      this.numEnemies = 6;
+      this.maxEnemies = 10; this.numEnemies = 6;
+      this.bg.changeSpeed(300);
+      this.player.frameDuration = 1/30;
+      this.enemyFrameDuration   = 1/30;
     }
-    this.enemiesData.enemies.forEach(e => e.stagger_frame = this.enemyStagger);
+
+    this.enemiesData.enemies.forEach(e => e.frameDuration = this.enemyFrameDuration);
   }
 
   removeEnemy(enemy) {
-    const enemyIndex = this.enemiesData.enemies.indexOf(enemy)
-    this.enemiesData.enemies.splice(enemyIndex, 1);
-    this.enemiesData.enemyWords.splice(enemyIndex, 1);
-    this.enemiesData.enemyWordPos.splice(enemyIndex, 1);
+    const idx = this.enemiesData.enemies.indexOf(enemy);
+    this.enemiesData.enemies.splice(idx, 1);
+    this.enemiesData.enemyWords.splice(idx, 1);
+    this.enemiesData.enemyWordPos.splice(idx, 1);
   }
 
   animate(timeStamp) {
-    const deltaTime = (timeStamp - this.lastTime) / 16;
+    // Cap deltaTime to 50ms to prevent a spiral of death after tab focus loss
+    const deltaTime = Math.min((timeStamp - this.lastTime) / 1000, 0.05);
     this.lastTime = timeStamp;
-    /*Animate background and player*/
-    this.ctx.clearRect(0, 0, this.dimensions.width, this.dimensions.height);
-    this.bg.draw(deltaTime);
-    this.player.draw(this.ctx, deltaTime);
 
-    /* Game Over Sequence */
-    if (this.gameOver() && this.running){
+    this.ctx.clearRect(0, 0, this.dimensions.width, this.dimensions.height);
+    this.bg.update(deltaTime);
+    this.bg.draw();
+    this.player.update(deltaTime);
+    this.player.draw(this.ctx);
+
+    /* Game over sequence */
+    if (this.gameOver() && this.running) {
       audio.src = MUSIC.gameOverBGMusic;
-      if (!audio.muted) {
-        MUSIC.gameOverAudio.play();
-      }
-      this.health(this.ctx)
+      if (!audio.muted) MUSIC.gameOverAudio.play();
+      this.health(this.ctx);
       this.player.dead();
       this.bg.changeSpeed(0);
       title.innerHTML = "GAME OVER";
@@ -193,39 +188,30 @@ export default class TypeBit {
       this.running = false;
     }
 
-    /*Increase difficulty*/
     this.changeDifficulty();
 
-    /*Animate enemies and status if game started*/
     if (this.running) {
-      //Health
-      this.health(this.ctx)
-
-      /*Input Logic*/
+      this.health(this.ctx);
       this.wordSubmit();
 
-      /*Enemy Logic*/
       this.enemiesData.enemies.forEach(enemy => {
-        enemy.draw(this.ctx, deltaTime)
+        enemy.update(deltaTime);
+        enemy.draw(this.ctx);
 
-        //Remove enemy if out of bounds
         if (enemy.bounds().right < 0) {
-          this.removeEnemy(enemy)
+          this.removeEnemy(enemy);
         }
 
-        //Enemy collision with player when not already destroyed
-        if (this.player.collidesWith(this.player.bounds(), enemy.bounds())
-        && enemy.destroyed === false) {
+        if (this.player.collidesWith(this.player.bounds(), enemy.bounds())) {
           this.player.hurt();
-          this.removeEnemy(enemy)
+          this.removeEnemy(enemy);
         }
-      })
+      });
 
-        //Game data info
-        this.status(this.ctx);
+      this.status(this.ctx);
     }
 
-    this.animReq = requestAnimationFrame(this.animate.bind(this))
+    this.animReq = requestAnimationFrame(this.animate.bind(this));
   }
 
   status(ctx) {
@@ -236,16 +222,18 @@ export default class TypeBit {
   }
 
   addEnemies() {
-    for (let i = 0; i < this.numEnemies; i++){
+    for (let i = 0; i < this.numEnemies; i++) {
       if (this.enemiesData.enemies.length < this.maxEnemies) {
-        let speed = Math.random()
-        let pos = i + Math.random()
-        const newEnemy = new Enemy(this.dimensions, speed, pos,
-          this.enemiesData.enemyWords, this.enemiesData.enemyWordPos, FPS)
-        newEnemy.stagger_frame = this.enemyStagger;
+        const speed = Math.random();
+        const pos = i + Math.random();
+        const newEnemy = new Enemy(
+          this.dimensions, speed, pos,
+          this.enemiesData.enemyWords, this.enemiesData.enemyWordPos
+        );
+        newEnemy.frameDuration = this.enemyFrameDuration;
         this.enemiesData.enemies.push(newEnemy);
-        this.enemiesData.enemyWords.push(newEnemy.words)
-        this.enemiesData.enemyWordPos.push(newEnemy.words_y)
+        this.enemiesData.enemyWords.push(newEnemy.words);
+        this.enemiesData.enemyWordPos.push(newEnemy.words_y);
       }
     }
   }
@@ -255,19 +243,15 @@ export default class TypeBit {
       this.typedWord = this.typed.slice(0, -1);
 
       if (this.enemiesData.enemyWords.includes(this.typedWord)) {
-        if (!audio.muted) {
-          MUSIC.enemyDestroyAudio.play();
-        };
-
-        let enemyIdx = this.enemiesData.enemyWords.indexOf(this.typedWord)
-        let enemy = this.enemiesData.enemies[enemyIdx]
+        if (!audio.muted) MUSIC.enemyDestroyAudio.play();
+        const idx = this.enemiesData.enemyWords.indexOf(this.typedWord);
+        const enemy = this.enemiesData.enemies[idx];
         this.score += enemy.score;
         this.removeEnemy(enemy);
       } else {
-        if (!audio.muted) {
-          MUSIC.mistakeAudio.play();
-        }
+        if (!audio.muted) MUSIC.mistakeAudio.play();
       }
+
       this.typed = "";
     }
   }
