@@ -1,5 +1,5 @@
 const CONSTANTS = {
-  GAME_SPEED: 120,              // pixels per second (base scroll speed)
+  GAME_SPEED: 60,               // pixels per second (base scroll speed)
   SPEED_MODS: [0, 0.5, 0.7, 0.9],
   WIDTH: 1152,
   HEIGHT: 576,

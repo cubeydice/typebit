@@ -52,6 +52,7 @@ export default class TypeBit {
     }
     this.numEnemies = 1;
     this.maxEnemies = 3;
+    this.enemyBaseSpeed = 60;       // px/s enemy travel speed (initial, see enemy.js BASE_SPEED)
     this.enemyFrameDuration = 1/8;  // 8 fps enemy animation (initial)
     this.score = 0;
     this.typed = "";
@@ -83,6 +84,7 @@ export default class TypeBit {
     Object.keys(this.enemiesData).forEach(key => this.enemiesData[key] = []);
     this.maxEnemies = 3;
     this.numEnemies = 1;
+    this.enemyBaseSpeed = 80;
     this.enemyFrameDuration = 1/8;
     clearInterval(this.enemyInterval);
 
@@ -102,7 +104,7 @@ export default class TypeBit {
     HEARTS.HEART_5_X = 0;
 
     // Reset background and sound
-    this.bg.changeSpeed(120);
+    this.bg.changeSpeed(60);
     audio.src = MUSIC.introBGMusic;
     Object.keys(this.level).forEach(lvl => this.level[lvl] = false);
     title.innerHTML = "typebit"
@@ -116,33 +118,38 @@ export default class TypeBit {
   changeDifficulty() {
     if (this.score > 50 && this.score <= 100) {
       this.maxEnemies = 3;  this.numEnemies = 2;
-      this.bg.changeSpeed(150);
+      this.bg.changeSpeed(75);
       this.player.frameDuration = 1/10;
       this.enemyFrameDuration   = 1/10;
+      this.enemyBaseSpeed       = 110;
     } else if (this.score > 100 && this.score <= 150) {
       this.maxEnemies = 4;  this.numEnemies = 2;
-      this.bg.changeSpeed(180);
+      this.bg.changeSpeed(90);
       this.player.frameDuration = 1/12;
       this.enemyFrameDuration   = 1/12;
+      this.enemyBaseSpeed       = 140;
     } else if (this.score > 150 && this.score <= 200) {
       this.maxEnemies = 5;  this.numEnemies = 3;
-      this.bg.changeSpeed(210);
+      this.bg.changeSpeed(105);
       this.player.frameDuration = 1/12;
       this.enemyFrameDuration   = 1/15;
+      this.enemyBaseSpeed       = 170;
       if (!this.level.med) {
         audio.src = MUSIC.medBGMusic;
         this.level.med = true;
       }
     } else if (this.score > 200 && this.score <= 250) {
       this.maxEnemies = 5;  this.numEnemies = 3;
-      this.bg.changeSpeed(225);
+      this.bg.changeSpeed(112);
       this.player.frameDuration = 1/15;
       this.enemyFrameDuration   = 1/15;
+      this.enemyBaseSpeed       = 200;
     } else if (this.score > 250 && this.score <= 350) {
       this.maxEnemies = 6;  this.numEnemies = 4;
-      this.bg.changeSpeed(240);
+      this.bg.changeSpeed(120);
       this.player.frameDuration = 1/20;
       this.enemyFrameDuration   = 1/20;
+      this.enemyBaseSpeed       = 240;
       if (!this.level.hard) {
         audio.src = MUSIC.fastBGMusic;
         this.player.run();
@@ -150,22 +157,28 @@ export default class TypeBit {
       }
     } else if (this.score > 350 && this.score <= 400) {
       this.maxEnemies = 8;  this.numEnemies = 4;
-      this.bg.changeSpeed(300);
+      this.bg.changeSpeed(150);
       this.player.frameDuration = 1/25;
       this.enemyFrameDuration   = 1/25;
+      this.enemyBaseSpeed       = 280;
     } else if (this.score > 400 && this.score <= 800) {
       this.maxEnemies = 9;  this.numEnemies = 5;
-      this.bg.changeSpeed(300);
+      this.bg.changeSpeed(150);
       this.player.frameDuration = 1/28;
       this.enemyFrameDuration   = 1/28;
+      this.enemyBaseSpeed       = 320;
     } else if (this.score > 800) {
       this.maxEnemies = 10; this.numEnemies = 6;
-      this.bg.changeSpeed(300);
+      this.bg.changeSpeed(150);
       this.player.frameDuration = 1/30;
       this.enemyFrameDuration   = 1/30;
+      this.enemyBaseSpeed       = 370;
     }
 
-    this.enemiesData.enemies.forEach(e => e.frameDuration = this.enemyFrameDuration);
+    this.enemiesData.enemies.forEach(e => {
+      e.frameDuration = this.enemyFrameDuration;
+      e.setBaseSpeed(this.enemyBaseSpeed);
+    });
   }
 
   removeEnemy(enemy) {
@@ -239,7 +252,8 @@ export default class TypeBit {
         const pos = i + Math.random();
         const newEnemy = new Enemy(
           this.dimensions, speed, pos,
-          this.enemiesData.enemyWords, this.enemiesData.enemyWordPos
+          this.enemiesData.enemyWords, this.enemiesData.enemyWordPos,
+          this.enemyBaseSpeed
         );
         newEnemy.frameDuration = this.enemyFrameDuration;
         this.enemiesData.enemies.push(newEnemy);

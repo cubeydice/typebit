@@ -1,8 +1,8 @@
 import { WORDS } from "./words";
 
 const CONSTANTS = {
-  BASE_SPEED: 24,         // px/s minimum enemy movement speed
-  SPEED_VARIANCE: 12,     // px/s additional random speed range
+  BASE_SPEED: 60,         // px/s initial enemy movement speed
+  SPEED_VARIANCE: 20,     // px/s additional random speed range per enemy
   ANIM_RATE: 8,           // default animation frames per second
   FRAME_COUNT: 7,         // frames in enemy sprite sheet row
   ENEMY_WIDTH: 64,
@@ -14,9 +14,10 @@ const CONSTANTS = {
 }
 
 export default class Enemy {
-  constructor(dimensions, speed, pos, enemyWords, enemyWordPos) {
+  constructor(dimensions, speedFactor, pos, enemyWords, enemyWordPos, baseSpeed = CONSTANTS.BASE_SPEED) {
     this.dimensions = dimensions;
-    this.speed = CONSTANTS.BASE_SPEED + speed * CONSTANTS.SPEED_VARIANCE; // px/s
+    this.speedFactor = speedFactor; // 0–1, preserved so speed can be recalculated on difficulty change
+    this.speed = baseSpeed + speedFactor * CONSTANTS.SPEED_VARIANCE; // px/s
     this.pos_x = CONSTANTS.SPAWN_X + (100 * pos);
     this.frameDuration = 1 / CONSTANTS.ANIM_RATE; // seconds per animation frame
     this.frameTimer = 0;
@@ -44,6 +45,10 @@ export default class Enemy {
         this.words_y += 10;
       }
     }
+  }
+
+  setBaseSpeed(baseSpeed) {
+    this.speed = baseSpeed + this.speedFactor * CONSTANTS.SPEED_VARIANCE;
   }
 
   update(deltaTime) {
