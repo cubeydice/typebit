@@ -23,17 +23,25 @@ MUSIC.gameOverAudio.volume = 0.3;
 MUSIC.mistakeAudio.volume = 0.2;
 
 const HEARTS = {
-  HEART_SIZE: 32,
-  HEART_1_X: 0,
-  HEART_2_X: 0,
-  HEART_3_X: 0,
-  HEART_4_X: 0,
-  HEART_5_X: 0,
-  HEARTS_Y: 0,
-  HEARTS_POS_X: 40,
-  HEARTS_POS_Y: 27,
-  HEART_CANVAS_SIZE: 64
+  SRC_SIZE: 32,
+  CANVAS_SIZE: 64,
+  POS_X: 40,
+  POS_Y: 27,
+  COUNT: 5
 };
+
+// Each tier applies when score > minScore && score <= maxScore.
+// music: 'med' | 'hard' triggers a one-time music/locomotion change on entry.
+const DIFFICULTY_TIERS = [
+  { minScore: 50,  maxScore: 100,      maxEnemies: 3,  numEnemies: 2, bgSpeed: 75,  playerRate: 1/10, enemyRate: 1/10, enemySpeed: 110 },
+  { minScore: 100, maxScore: 150,      maxEnemies: 4,  numEnemies: 2, bgSpeed: 90,  playerRate: 1/12, enemyRate: 1/12, enemySpeed: 140 },
+  { minScore: 150, maxScore: 200,      maxEnemies: 5,  numEnemies: 3, bgSpeed: 105, playerRate: 1/12, enemyRate: 1/15, enemySpeed: 170, music: 'med' },
+  { minScore: 200, maxScore: 250,      maxEnemies: 5,  numEnemies: 3, bgSpeed: 112, playerRate: 1/15, enemyRate: 1/15, enemySpeed: 200 },
+  { minScore: 250, maxScore: 350,      maxEnemies: 6,  numEnemies: 4, bgSpeed: 120, playerRate: 1/20, enemyRate: 1/20, enemySpeed: 240, music: 'hard' },
+  { minScore: 350, maxScore: 400,      maxEnemies: 8,  numEnemies: 4, bgSpeed: 150, playerRate: 1/25, enemyRate: 1/25, enemySpeed: 280 },
+  { minScore: 400, maxScore: 800,      maxEnemies: 9,  numEnemies: 5, bgSpeed: 150, playerRate: 1/28, enemyRate: 1/28, enemySpeed: 320 },
+  { minScore: 800, maxScore: Infinity, maxEnemies: 10, numEnemies: 6, bgSpeed: 150, playerRate: 1/30, enemyRate: 1/30, enemySpeed: 370 },
+];
 
 export default class TypeBit {
   constructor(canvas) {
@@ -52,8 +60,8 @@ export default class TypeBit {
     }
     this.numEnemies = 1;
     this.maxEnemies = 3;
-    this.enemyBaseSpeed = 60;       // px/s enemy travel speed (initial, see enemy.js BASE_SPEED)
-    this.enemyFrameDuration = 1/8;  // 8 fps enemy animation (initial)
+    this.enemyBaseSpeed = 60;
+    this.enemyFrameDuration = 1/8;
     this.score = 0;
     this.typed = "";
     this.running = false;
@@ -84,7 +92,7 @@ export default class TypeBit {
     Object.keys(this.enemiesData).forEach(key => this.enemiesData[key] = []);
     this.maxEnemies = 3;
     this.numEnemies = 1;
-    this.enemyBaseSpeed = 80;
+    this.enemyBaseSpeed = 60;
     this.enemyFrameDuration = 1/8;
     clearInterval(this.enemyInterval);
 
@@ -97,11 +105,6 @@ export default class TypeBit {
     this.player.frame = 0;
     this.player.hurts = false;
     this.player.walk();
-    HEARTS.HEART_1_X = 0;
-    HEARTS.HEART_2_X = 0;
-    HEARTS.HEART_3_X = 0;
-    HEARTS.HEART_4_X = 0;
-    HEARTS.HEART_5_X = 0;
 
     // Reset background and sound
     this.bg.changeSpeed(60);
@@ -116,63 +119,24 @@ export default class TypeBit {
   }
 
   changeDifficulty() {
-    if (this.score > 50 && this.score <= 100) {
-      this.maxEnemies = 3;  this.numEnemies = 2;
-      this.bg.changeSpeed(75);
-      this.player.frameDuration = 1/10;
-      this.enemyFrameDuration   = 1/10;
-      this.enemyBaseSpeed       = 110;
-    } else if (this.score > 100 && this.score <= 150) {
-      this.maxEnemies = 4;  this.numEnemies = 2;
-      this.bg.changeSpeed(90);
-      this.player.frameDuration = 1/12;
-      this.enemyFrameDuration   = 1/12;
-      this.enemyBaseSpeed       = 140;
-    } else if (this.score > 150 && this.score <= 200) {
-      this.maxEnemies = 5;  this.numEnemies = 3;
-      this.bg.changeSpeed(105);
-      this.player.frameDuration = 1/12;
-      this.enemyFrameDuration   = 1/15;
-      this.enemyBaseSpeed       = 170;
-      if (!this.level.med) {
-        audio.src = MUSIC.medBGMusic;
-        this.level.med = true;
-      }
-    } else if (this.score > 200 && this.score <= 250) {
-      this.maxEnemies = 5;  this.numEnemies = 3;
-      this.bg.changeSpeed(112);
-      this.player.frameDuration = 1/15;
-      this.enemyFrameDuration   = 1/15;
-      this.enemyBaseSpeed       = 200;
-    } else if (this.score > 250 && this.score <= 350) {
-      this.maxEnemies = 6;  this.numEnemies = 4;
-      this.bg.changeSpeed(120);
-      this.player.frameDuration = 1/20;
-      this.enemyFrameDuration   = 1/20;
-      this.enemyBaseSpeed       = 240;
-      if (!this.level.hard) {
-        audio.src = MUSIC.fastBGMusic;
-        this.player.run();
-        this.level.hard = true;
-      }
-    } else if (this.score > 350 && this.score <= 400) {
-      this.maxEnemies = 8;  this.numEnemies = 4;
-      this.bg.changeSpeed(150);
-      this.player.frameDuration = 1/25;
-      this.enemyFrameDuration   = 1/25;
-      this.enemyBaseSpeed       = 280;
-    } else if (this.score > 400 && this.score <= 800) {
-      this.maxEnemies = 9;  this.numEnemies = 5;
-      this.bg.changeSpeed(150);
-      this.player.frameDuration = 1/28;
-      this.enemyFrameDuration   = 1/28;
-      this.enemyBaseSpeed       = 320;
-    } else if (this.score > 800) {
-      this.maxEnemies = 10; this.numEnemies = 6;
-      this.bg.changeSpeed(150);
-      this.player.frameDuration = 1/30;
-      this.enemyFrameDuration   = 1/30;
-      this.enemyBaseSpeed       = 370;
+    const tier = DIFFICULTY_TIERS.find(t => this.score > t.minScore && this.score <= t.maxScore);
+    if (!tier) return;
+
+    this.maxEnemies           = tier.maxEnemies;
+    this.numEnemies           = tier.numEnemies;
+    this.bg.changeSpeed(tier.bgSpeed);
+    this.player.frameDuration = tier.playerRate;
+    this.enemyFrameDuration   = tier.enemyRate;
+    this.enemyBaseSpeed       = tier.enemySpeed;
+
+    if (tier.music === 'med' && !this.level.med) {
+      audio.src = MUSIC.medBGMusic;
+      this.level.med = true;
+    }
+    if (tier.music === 'hard' && !this.level.hard) {
+      audio.src = MUSIC.fastBGMusic;
+      this.player.run();
+      this.level.hard = true;
     }
 
     this.enemiesData.enemies.forEach(e => {
@@ -248,10 +212,8 @@ export default class TypeBit {
   addEnemies() {
     for (let i = 0; i < this.numEnemies; i++) {
       if (this.enemiesData.enemies.length < this.maxEnemies) {
-        const speed = Math.random();
-        const pos = i + Math.random();
         const newEnemy = new Enemy(
-          this.dimensions, speed, pos,
+          this.dimensions, Math.random(), i + Math.random(),
           this.enemiesData.enemyWords, this.enemiesData.enemyWordPos,
           this.enemyBaseSpeed
         );
@@ -264,57 +226,29 @@ export default class TypeBit {
   }
 
   wordSubmit() {
-    if (this.typed.slice(-1) === "~") {
-      const typedWord = this.typed.slice(0, -1);
+    if (this.typed.slice(-1) !== "~") return;
+    const typedWord = this.typed.slice(0, -1);
+    this.typed = "";
 
-      if (this.enemiesData.enemyWords.includes(typedWord)) {
-        if (!audio.muted) MUSIC.enemyDestroyAudio.play();
-        const idx = this.enemiesData.enemyWords.indexOf(typedWord);
-        const enemy = this.enemiesData.enemies[idx];
-        this.score += enemy.score;
-        this.removeEnemy(enemy);
-      } else {
-        if (!audio.muted) MUSIC.mistakeAudio.play();
-      }
-
-      this.typed = "";
+    const idx = this.enemiesData.enemyWords.indexOf(typedWord);
+    if (idx !== -1) {
+      if (!audio.muted) MUSIC.enemyDestroyAudio.play();
+      this.score += this.enemiesData.enemies[idx].score;
+      this.removeEnemy(this.enemiesData.enemies[idx]);
+    } else {
+      if (!audio.muted) MUSIC.mistakeAudio.play();
     }
   }
 
   health(ctx) {
-    if (this.player.health < 10) HEARTS.HEART_1_X = 64
-    ctx.drawImage(hearts,
-      HEARTS.HEART_1_X, HEARTS.HEARTS_Y,
-      HEARTS.HEART_SIZE, HEARTS.HEART_SIZE,
-      HEARTS.HEARTS_POS_X, HEARTS.HEARTS_POS_Y,
-      HEARTS.HEART_CANVAS_SIZE, HEARTS.HEART_CANVAS_SIZE)
-
-    if (this.player.health < 20) HEARTS.HEART_2_X = 64
-    ctx.drawImage(hearts,
-      HEARTS.HEART_2_X, HEARTS.HEARTS_Y,
-      HEARTS.HEART_SIZE, HEARTS.HEART_SIZE,
-      HEARTS.HEARTS_POS_X + HEARTS.HEART_CANVAS_SIZE, HEARTS.HEARTS_POS_Y,
-      HEARTS.HEART_CANVAS_SIZE, HEARTS.HEART_CANVAS_SIZE)
-
-    if (this.player.health < 30) HEARTS.HEART_3_X = 64
-    ctx.drawImage(hearts,
-      HEARTS.HEART_3_X, HEARTS.HEARTS_Y,
-      HEARTS.HEART_SIZE, HEARTS.HEART_SIZE,
-      HEARTS.HEARTS_POS_X + (HEARTS.HEART_CANVAS_SIZE * 2), HEARTS.HEARTS_POS_Y,
-      HEARTS.HEART_CANVAS_SIZE, HEARTS.HEART_CANVAS_SIZE)
-
-    if (this.player.health < 40) HEARTS.HEART_4_X = 64
-    ctx.drawImage(hearts,
-      HEARTS.HEART_4_X, HEARTS.HEARTS_Y,
-      HEARTS.HEART_SIZE, HEARTS.HEART_SIZE,
-      HEARTS.HEARTS_POS_X + (HEARTS.HEART_CANVAS_SIZE * 3), HEARTS.HEARTS_POS_Y,
-      HEARTS.HEART_CANVAS_SIZE, HEARTS.HEART_CANVAS_SIZE)
-
-    if (this.player.health < 50) HEARTS.HEART_5_X = 64
-    ctx.drawImage(hearts,
-      HEARTS.HEART_5_X, HEARTS.HEARTS_Y,
-      HEARTS.HEART_SIZE, HEARTS.HEART_SIZE,
-      HEARTS.HEARTS_POS_X + (HEARTS.HEART_CANVAS_SIZE * 4), HEARTS.HEARTS_POS_Y,
-      HEARTS.HEART_CANVAS_SIZE, HEARTS.HEART_CANVAS_SIZE)
+    for (let i = 0; i < HEARTS.COUNT; i++) {
+      const srcX = this.player.health < (i + 1) * 10 ? HEARTS.SRC_SIZE : 0;
+      ctx.drawImage(hearts,
+        srcX, 0,
+        HEARTS.SRC_SIZE, HEARTS.SRC_SIZE,
+        HEARTS.POS_X + (HEARTS.CANVAS_SIZE * i), HEARTS.POS_Y,
+        HEARTS.CANVAS_SIZE, HEARTS.CANVAS_SIZE
+      );
+    }
   }
 }
