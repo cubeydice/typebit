@@ -41,11 +41,11 @@ const HEARTS = {
 // Each tier applies when score > minScore && score <= maxScore.
 // music: 'med' | 'hard' triggers a one-time music/locomotion change on entry.
 const DIFFICULTY_TIERS = [
-  { minScore: 50,   maxScore: 150,     maxEnemies: 3,  numEnemies: 2, bgSpeed: 65,  playerRate: 1/9,  enemyRate: 1/9,  enemySpeed: 75,  music: 'med'  },
+  { minScore: 50,   maxScore: 150,     maxEnemies: 3,  numEnemies: 2, bgSpeed: 65,  playerRate: 1/9,  enemyRate: 1/9,  enemySpeed: 75,  music: 'intro' },
   { minScore: 150,  maxScore: 300,     maxEnemies: 4,  numEnemies: 2, bgSpeed: 78,  playerRate: 1/10, enemyRate: 1/10, enemySpeed: 100, music: 'med'  },
-  { minScore: 300,  maxScore: 500,     maxEnemies: 5,  numEnemies: 3, bgSpeed: 85,  playerRate: 1/12, enemyRate: 1/12, enemySpeed: 120, music: 'med'  },
-  { minScore: 500,  maxScore: 750,     maxEnemies: 6,  numEnemies: 3, bgSpeed: 110, playerRate: 1/14, enemyRate: 1/14, enemySpeed: 150, music: 'hard', run: true },
-  { minScore: 750,  maxScore: 1000,    maxEnemies: 7,  numEnemies: 4, bgSpeed: 120, playerRate: 1/18, enemyRate: 1/18, enemySpeed: 155, music: 'hard' },
+  { minScore: 300,  maxScore: 450,     maxEnemies: 5,  numEnemies: 3, bgSpeed: 85,  playerRate: 1/12, enemyRate: 1/12, enemySpeed: 120, music: 'med'  },
+  { minScore: 450,  maxScore: 700,     maxEnemies: 6,  numEnemies: 3, bgSpeed: 110, playerRate: 1/14, enemyRate: 1/14, enemySpeed: 150, music: 'hard', run: true },
+  { minScore: 700,  maxScore: 1000,    maxEnemies: 7,  numEnemies: 4, bgSpeed: 120, playerRate: 1/18, enemyRate: 1/18, enemySpeed: 155, music: 'hard' },
   { minScore: 1000, maxScore: 1500,    maxEnemies: 8,  numEnemies: 4, bgSpeed: 135, playerRate: 1/22, enemyRate: 1/22, enemySpeed: 180, music: 'hard' },
   { minScore: 1500, maxScore: 2500,    maxEnemies: 9,  numEnemies: 5, bgSpeed: 140, playerRate: 1/26, enemyRate: 1/26, enemySpeed: 210, music: 'hard' },
   { minScore: 2500, maxScore: Infinity, maxEnemies: 10, numEnemies: 6, bgSpeed: 180, playerRate: 1/30, enemyRate: 1/30, enemySpeed: 250, music: 'hard' },
