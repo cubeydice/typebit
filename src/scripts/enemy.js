@@ -68,6 +68,7 @@ export default class Enemy {
     ctx.roundRect(this.pos_x - this.words.length - 9, this.words_y - 28, (this.words.length * 10) + 10, 22, [10]);
     ctx.fill();
     ctx.strokeStyle = "gray";
+    ctx.lineWidth = 1;
     ctx.stroke();
 
     ctx.fillStyle = "black";

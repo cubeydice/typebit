@@ -74,8 +74,12 @@ export default class TypeBit {
     this.typed = "";
     this.running = false;
     this.currentMusic = 'intro';
+    this.charsTyped = 0;
+    this.elapsedTime = 0;
     this.fadeAlpha = 0;
     this.fading = false;
+    this.timerStarted = false;
+    this.animate = this.animate.bind(this);
   }
 
   run() {
@@ -89,7 +93,7 @@ export default class TypeBit {
     this.typed = "";
     title.innerHTML = ""
     start.innerHTML = ""
-    this.enemyInterval = setInterval(this.addEnemies.bind(this), 500)
+    this.enemyInterval = setInterval(this.addEnemies.bind(this), 500);
   }
 
   restart() {
@@ -106,6 +110,9 @@ export default class TypeBit {
     // Reset player
     this.typed = "";
     this.score = 0;
+    this.charsTyped = 0;
+    this.elapsedTime = 0;
+    this.timerStarted = false;
     this.player.health = 50;
     this.player.frameDuration = 1/8;
     this.player.frameTimer = 0;
@@ -177,7 +184,8 @@ export default class TypeBit {
       this.player.dead();
       this.bg.changeSpeed(0);
       title.innerHTML = "GAME OVER";
-      start.innerHTML = `final score: ${this.score} <br>[ctrl] to restart`;
+      const finalWpm = this.charsTyped > 0 ? Math.round((this.charsTyped / 5) / (this.elapsedTime / 60)) : 0;
+      start.innerHTML = `final score: ${this.score} &nbsp;|&nbsp; ${finalWpm} wpm <br>[ctrl] to restart`;
       clearInterval(this.enemyInterval);
       this.running = false;
       this.fading = true;
@@ -191,6 +199,8 @@ export default class TypeBit {
     }
 
     if (this.running) {
+      if (!this.timerStarted && this.typed.length > 0) this.timerStarted = true;
+      if (this.timerStarted) this.elapsedTime += deltaTime;
       this.changeDifficulty();
       this.health(this.ctx);
       this.wordSubmit();
@@ -212,14 +222,18 @@ export default class TypeBit {
       this.status(this.ctx);
     }
 
-    this.animReq = requestAnimationFrame(this.animate.bind(this));
+    this.animReq = requestAnimationFrame(this.animate);
   }
 
   status(ctx) {
+    const wpm = this.charsTyped > 0 ? Math.round((this.charsTyped / 5) / (this.elapsedTime / 60)) : 0;
+    ctx.fillStyle = "black";
     ctx.font = "40px VT323";
-    ctx.fillText(`score: ${this.score}`, 960, 70)
+    ctx.fillText(`score: ${this.score}`, 960, 70);
+    ctx.font = "24px VT323";
+    ctx.fillText(`${wpm} wpm`, 960, 100);
     ctx.font = "64px VT323";
-    ctx.fillText(this.typed, 200, 280)
+    ctx.fillText(this.typed, 200, 280);
   }
 
   addEnemies() {
@@ -247,6 +261,7 @@ export default class TypeBit {
     if (idx !== -1) {
       if (!audio.muted) MUSIC.enemyDestroyAudio.play();
       this.score += this.enemiesData.enemies[idx].score;
+      this.charsTyped += this.enemiesData.enemies[idx].score; // score === word.length
       this.removeEnemy(this.enemiesData.enemies[idx]);
     } else {
       if (!audio.muted) MUSIC.mistakeAudio.play();
